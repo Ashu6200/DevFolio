@@ -1,0 +1,237 @@
+'use client';
+import { education, experiences } from '@/constant';
+import { Button } from '@/components/ui/button';
+import {
+  Building2,
+  Calendar,
+  Github,
+  Linkedin,
+  Mail,
+  MapPin,
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+import { motion } from 'motion/react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+
+const AboutPage = () => {
+  const [activeValue, setActiveValue] = React.useState<string>('education');
+  return (
+    <main className='py-16 px-6 md:px-8 md:py-32'>
+      <motion.section
+        className='max-w-5xl mx-auto mb-24'
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-12 items-start'>
+          <div className='lg:col-span-1 flex justify-center items-center'>
+            <div className='relative w-80 h-80'>
+              <div className='w-full h-full relative overflow-hidden rounded-full'>
+                <Image
+                  src='/images/hero.webp'
+                  alt='Alex Johnson'
+                  width={256}
+                  height={256}
+                  className='object-cover w-full h-full'
+                />
+              </div>
+              <div className='z-10 absolute -bottom-3 right-3 bg-background text-foreground px-3 py-1 rounded-full text-sm font-medium border'>
+                Available for work
+              </div>
+            </div>
+          </div>
+
+          <div className='lg:col-span-2 space-y-4'>
+            <div>
+              <h1 className='text-4xl font-bold mb-2'>Ashutosh Kewat</h1>
+              <p className='text-sm md:text-base  text-primary mb-4'>
+                MERN Stack Developer
+              </p>
+              <div className='flex items-center gap-4 text-muted-foreground mb-6'>
+                <div className='flex items-center gap-1'>
+                  <MapPin className='w-2 h-2' />
+                  <span className='text-sm md:text-base  text-primary'>
+                    Janjgir-Champa, Chhattisgarh
+                  </span>
+                </div>
+                <div className='flex items-center gap-1'>
+                  <Calendar className='w-2 h-2' />
+                  <span className='text-sm md:text-base  text-primary'>
+                    1.5+ years experience
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className='flex gap-2'>
+              <Button variant='default' asChild className='rounded-full p-2'>
+                <Link href='/contact'>
+                  <Mail className='w-2 h-2 mr-1' />
+                  Get In Touch
+                </Link>
+              </Button>
+              <Button variant='outline' asChild className='rounded-full p-2'>
+                <Link href='https://github.com' target='_blank'>
+                  <Github className='w-2 h-2 mr-1' />
+                  GitHub
+                </Link>
+              </Button>
+              <Button variant='outline' asChild className='rounded-full p-2'>
+                <Link href='https://linkedin.com' target='_blank'>
+                  <Linkedin className='w-2 h-2 mr-1' />
+                  LinkedIn
+                </Link>
+              </Button>
+            </div>
+
+            <p className='text-sm md:text-base  text-primary leading-relaxed'>
+              {`I'm a passionate full-stack developer with expertise in the MERN
+              stack. I love creating scalable web applications that solve
+              real-world problems and deliver exceptional user experiences. When
+              I'm not coding, you'll find me exploring new technologies,
+              contributing to open-source projects, or sharing knowledge through
+              technical writing.`}
+            </p>
+          </div>
+        </div>
+      </motion.section>
+      <motion.section
+        className='max-w-5xl mx-auto'
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Tabs
+          value={activeValue}
+          defaultValue='education'
+          onValueChange={setActiveValue}
+          className='space-y-8 w-full '
+        >
+          <TabsList className='w-full bg-transparent p-1 flex items-center justify-center gap-4'>
+            <TabsTrigger
+              value='education'
+              className={cn(
+                'data-[state=active]:bg-muted gap-2',
+                'data-[state=active]:border-border border border-transparent'
+              )}
+            >
+              <p className='py-2'>{'Education'}</p>
+            </TabsTrigger>
+            <TabsTrigger
+              value='career'
+              className={cn(
+                'data-[state=active]:bg-muted gap-2',
+                'data-[state=active]:border-border border border-transparent'
+              )}
+            >
+              <p className='py-2'>{'Career'}</p>
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value='education'>
+            <div className='relative ml-3'>
+              {/* Timeline line */}
+              <div className='absolute left-0 top-4 bottom-0 border-l-2' />
+              {education?.map(
+                (
+                  { institution, description, period, highlights, degree },
+                  index
+                ) => (
+                  <div key={index} className='relative pl-8 pb-12 last:pb-0'>
+                    <div className='absolute h-3 w-3 -translate-x-1/2 left-px top-3 rounded-full border-2 border-primary bg-background' />
+                    <div className='space-y-3'>
+                      <div className='flex items-center gap-3'>
+                        <div className='flex-shrink-0 h-9 w-9 bg-primary rounded-full flex items-center justify-center'>
+                          <Building2 className='h-5 w-5 text-background' />
+                        </div>
+                        <span className='text-base sm:text-lg font-semibold'>
+                          {institution}
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className='text-lg sm:text-xl font-medium'>
+                          {degree}
+                        </h3>
+                        <div className='flex items-center gap-2 mt-1 text-sm'>
+                          <Calendar className='h-4 w-4' />
+                          <span>{period}</span>
+                        </div>
+                      </div>
+                      <p className='text-sm md:text-base  text-primary'>
+                        {description}
+                      </p>
+                      <div className='flex flex-wrap gap-2'>
+                        {highlights.map((tech) => (
+                          <Badge
+                            key={tech}
+                            variant='secondary'
+                            className='rounded-full'
+                          >
+                            {tech}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          </TabsContent>
+          <TabsContent value='career'>
+            <div className='relative ml-3'>
+              {/* Timeline line */}
+              <div className='absolute left-0 top-4 bottom-0 border-l-2' />
+              {experiences.map(
+                (
+                  { company, description, period, technologies, title },
+                  index
+                ) => (
+                  <div key={index} className='relative pl-8 pb-12 last:pb-0'>
+                    <div className='absolute h-3 w-3 -translate-x-1/2 left-px top-3 rounded-full border-2 border-primary bg-background' />
+                    <div className='space-y-3'>
+                      <div className='flex items-center gap-3'>
+                        <div className='flex-shrink-0 h-9 w-9 bg-accent rounded-full flex items-center justify-center'>
+                          <Building2 className='h-5 w-5 text-muted-foreground' />
+                        </div>
+                        <span className='text-base sm:text-lg font-semibold'>
+                          {company}
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className='text-lg sm:text-xl font-medium'>
+                          {title}
+                        </h3>
+                        <div className='flex items-center gap-2 mt-1 text-sm'>
+                          <Calendar className='h-4 w-4' />
+                          <span>{period}</span>
+                        </div>
+                      </div>
+                      <p className='text-sm md:text-base  text-primary'>
+                        {description}
+                      </p>
+                      <div className='flex flex-wrap gap-2'>
+                        {technologies.map((tech) => (
+                          <Badge
+                            key={tech}
+                            variant='secondary'
+                            className='rounded-full'
+                          >
+                            {tech}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </motion.section>
+    </main>
+  );
+};
+
+export default AboutPage;
