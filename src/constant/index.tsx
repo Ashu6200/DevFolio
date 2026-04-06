@@ -1,4 +1,4 @@
-import { BookOpen, FolderOpen, Home, Mail, User } from 'lucide-react';
+import { FolderOpen, Home, Mail, User } from 'lucide-react';
 import React from 'react';
 
 type NavItem = {
@@ -10,7 +10,6 @@ export const navItems: NavItem[] = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/about', label: 'About', icon: User },
   { href: '/projects', label: 'Projects', icon: FolderOpen },
-  { href: '/blogs', label: 'Blog', icon: BookOpen },
   { href: '/contact', label: 'Contact', icon: Mail },
 ];
 
@@ -303,81 +302,5 @@ export const techSkills: TechSkill[] = [
   },
 ] as const;
 
-type Experience = {
-  title: string;
-  company: string;
-  period: string;
-  description: string;
-  technologies: string[];
-};
-type Education = {
-  degree: string;
-  institution: string;
-  period: string;
-  description: string;
-  highlights: string[];
-};
-export const experiences: Experience[] = [
-  {
-    title: 'Senior Full Stack Developer',
-    company: 'TechCorp Solutions',
-    period: '2023 - Present',
-    description:
-      'Led the development of enterprise-scale web applications, mentored junior developers, and implemented best practices for code quality and performance optimization.',
-    technologies: ['React', 'Node.js', 'TypeScript', 'AWS', 'MongoDB'],
-  },
-  {
-    title: 'Full Stack Developer',
-    company: 'Digital Innovations Inc',
-    period: '2021 - 2023',
-    description:
-      'Developed and maintained multiple client projects, implemented responsive designs, and integrated third-party APIs for enhanced functionality.',
-    technologies: ['React', 'Express.js', 'PostgreSQL', 'Docker', 'Redis'],
-  },
-  {
-    title: 'Frontend Developer',
-    company: 'WebTech Studios',
-    period: '2018 - 2021',
-    description:
-      'Created responsive and interactive user interfaces, collaborated with designers, and optimized application performance.',
-    technologies: ['React', 'JavaScript', 'SASS', 'Webpack', 'Jest'],
-  },
-];
-export const education: Education[] = [
-  {
-    degree: 'Master of Computer Applications (MCA)',
-    institution: 'National Institute of Technology',
-    period: '2016 - 2018',
-    description:
-      'Focused on software engineering, web development, and distributed systems. Completed capstone project on scalable microservices architecture.',
-    highlights: [
-      'Distributed Systems',
-      'Web Development',
-      'Database Management',
-    ],
-  },
-  {
-    degree: 'Bachelor of Computer Science',
-    institution: 'State University of Technology',
-    period: '2013 - 2016',
-    description:
-      'Studied core computer science subjects including algorithms, data structures, and system design. Participated in coding competitions and open-source projects.',
-    highlights: ['Algorithms', 'System Design', 'Open Source Contributions'],
-  },
-  {
-    degree: 'Class 12th (Senior Secondary)',
-    institution: 'ABC Senior Secondary School',
-    period: '2011 - 2013',
-    description:
-      'Completed Higher Secondary education with a focus on Science stream (PCM with Computer Science).',
-    highlights: ['Physics', 'Mathematics', 'Computer Science'],
-  },
-  {
-    degree: 'Class 10th (Secondary School)',
-    institution: 'ABC Senior Secondary School',
-    period: '2009 - 2011',
-    description:
-      'Completed Secondary School education with a strong academic record and active participation in school-level science fairs.',
-    highlights: ['Science', 'Mathematics', 'English'],
-  },
-];
+// Education and work experience data is now managed via the dashboard
+// and stored in MongoDB. See /dashboard/education and /dashboard/work.

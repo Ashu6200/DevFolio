@@ -1,5 +1,6 @@
 'use client';
-import { education, experiences } from '@/constant';
+
+import { trpc } from '@/utils/trpc';
 import { Button } from '@/components/ui/button';
 import {
   Building2,
@@ -19,6 +20,11 @@ import { Badge } from '@/components/ui/badge';
 
 const AboutPage = () => {
   const [activeValue, setActiveValue] = React.useState<string>('education');
+  const { data: educationData, isLoading: eduLoading } =
+    trpc.education.list.useQuery();
+  const { data: workData, isLoading: workLoading } =
+    trpc.work.list.useQuery();
+
   return (
     <main className='py-16 px-6 md:px-8 md:py-32'>
       <motion.section
@@ -33,7 +39,7 @@ const AboutPage = () => {
               <div className='w-full h-full relative overflow-hidden rounded-full'>
                 <Image
                   src='/images/hero.webp'
-                  alt='Alex Johnson'
+                  alt='Profile'
                   width={256}
                   height={256}
                   className='object-cover w-full h-full'
@@ -48,19 +54,19 @@ const AboutPage = () => {
           <div className='lg:col-span-2 space-y-4'>
             <div>
               <h1 className='text-4xl font-bold mb-2'>Ashutosh Kewat</h1>
-              <p className='text-sm md:text-base  text-primary mb-4'>
+              <p className='text-sm md:text-base text-primary mb-4'>
                 MERN Stack Developer
               </p>
               <div className='flex items-center gap-4 text-muted-foreground mb-6'>
                 <div className='flex items-center gap-1'>
                   <MapPin className='w-2 h-2' />
-                  <span className='text-sm md:text-base  text-primary'>
+                  <span className='text-sm md:text-base text-primary'>
                     Janjgir-Champa, Chhattisgarh
                   </span>
                 </div>
                 <div className='flex items-center gap-1'>
                   <Calendar className='w-2 h-2' />
-                  <span className='text-sm md:text-base  text-primary'>
+                  <span className='text-sm md:text-base text-primary'>
                     1.5+ years experience
                   </span>
                 </div>
@@ -87,7 +93,7 @@ const AboutPage = () => {
               </Button>
             </div>
 
-            <p className='text-sm md:text-base  text-primary leading-relaxed'>
+            <p className='text-sm md:text-base text-primary leading-relaxed'>
               {`I'm a passionate full-stack developer with expertise in the MERN
               stack. I love creating scalable web applications that solve
               real-world problems and deliver exceptional user experiences. When
@@ -98,6 +104,7 @@ const AboutPage = () => {
           </div>
         </div>
       </motion.section>
+
       <motion.section
         className='max-w-5xl mx-auto'
         initial={{ opacity: 0, y: 20 }}
@@ -108,7 +115,7 @@ const AboutPage = () => {
           value={activeValue}
           defaultValue='education'
           onValueChange={setActiveValue}
-          className='space-y-8 w-full '
+          className='space-y-8 w-full'
         >
           <TabsList className='w-full bg-transparent p-1 flex items-center justify-center gap-4'>
             <TabsTrigger
@@ -118,7 +125,7 @@ const AboutPage = () => {
                 'data-[state=active]:border-border border border-transparent'
               )}
             >
-              <p className='py-2'>{'Education'}</p>
+              <p className='py-2'>Education</p>
             </TabsTrigger>
             <TabsTrigger
               value='career'
@@ -127,18 +134,43 @@ const AboutPage = () => {
                 'data-[state=active]:border-border border border-transparent'
               )}
             >
-              <p className='py-2'>{'Career'}</p>
+              <p className='py-2'>Career</p>
             </TabsTrigger>
           </TabsList>
+
           <TabsContent value='education'>
             <div className='relative ml-3'>
-              {/* Timeline line */}
               <div className='absolute left-0 top-4 bottom-0 border-l-2' />
-              {education?.map(
-                (
-                  { institution, description, period, highlights, degree },
-                  index
-                ) => (
+              {eduLoading && (
+                <div className='pl-8 space-y-6'>
+                  {[1, 2].map((i) => (
+                    <div key={i} className='animate-pulse space-y-3'>
+                      <div className='h-5 bg-muted rounded w-1/3' />
+                      <div className='h-4 bg-muted rounded w-1/2' />
+                      <div className='h-4 bg-muted rounded w-2/3' />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {educationData?.map((item, index) => {
+                const startDate = new Date(
+                  item.startDate as unknown as string
+                ).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                });
+                const endDate = item.current
+                  ? 'Present'
+                  : item.endDate
+                    ? new Date(
+                        item.endDate as unknown as string
+                      ).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                      })
+                    : '';
+
+                return (
                   <div key={index} className='relative pl-8 pb-12 last:pb-0'>
                     <div className='absolute h-3 w-3 -translate-x-1/2 left-px top-3 rounded-full border-2 border-primary bg-background' />
                     <div className='space-y-3'>
@@ -147,47 +179,82 @@ const AboutPage = () => {
                           <Building2 className='h-5 w-5 text-background' />
                         </div>
                         <span className='text-base sm:text-lg font-semibold'>
-                          {institution}
+                          {item.institution}
                         </span>
                       </div>
                       <div>
                         <h3 className='text-lg sm:text-xl font-medium'>
-                          {degree}
+                          {item.degree}
                         </h3>
                         <div className='flex items-center gap-2 mt-1 text-sm'>
                           <Calendar className='h-4 w-4' />
-                          <span>{period}</span>
+                          <span>
+                            {startDate} – {endDate}
+                          </span>
                         </div>
                       </div>
-                      <p className='text-sm md:text-base  text-primary'>
-                        {description}
-                      </p>
-                      <div className='flex flex-wrap gap-2'>
-                        {highlights.map((tech) => (
-                          <Badge
-                            key={tech}
-                            variant='secondary'
-                            className='rounded-full'
-                          >
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
+                      {item.description && (
+                        <p className='text-sm md:text-base text-primary'>
+                          {item.description}
+                        </p>
+                      )}
+                      {item.highlights?.length > 0 && (
+                        <div className='flex flex-wrap gap-2'>
+                          {item.highlights.map((tech: string) => (
+                            <Badge
+                              key={tech}
+                              variant='secondary'
+                              className='rounded-full'
+                            >
+                              {tech}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
-                )
+                );
+              })}
+              {educationData?.length === 0 && (
+                <p className='pl-8 text-muted-foreground'>
+                  No education entries yet.
+                </p>
               )}
             </div>
           </TabsContent>
+
           <TabsContent value='career'>
             <div className='relative ml-3'>
-              {/* Timeline line */}
               <div className='absolute left-0 top-4 bottom-0 border-l-2' />
-              {experiences.map(
-                (
-                  { company, description, period, technologies, title },
-                  index
-                ) => (
+              {workLoading && (
+                <div className='pl-8 space-y-6'>
+                  {[1, 2].map((i) => (
+                    <div key={i} className='animate-pulse space-y-3'>
+                      <div className='h-5 bg-muted rounded w-1/3' />
+                      <div className='h-4 bg-muted rounded w-1/2' />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {workData?.map((item, index) => {
+                const startDate = new Date(
+                  item.startDate as unknown as string
+                ).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                });
+                const endDate = item.current
+                  ? 'Present'
+                  : item.endDate
+                    ? new Date(
+                        item.endDate as unknown as string
+                      ).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                      })
+                    : '';
+
+                return (
                   <div key={index} className='relative pl-8 pb-12 last:pb-0'>
                     <div className='absolute h-3 w-3 -translate-x-1/2 left-px top-3 rounded-full border-2 border-primary bg-background' />
                     <div className='space-y-3'>
@@ -196,35 +263,46 @@ const AboutPage = () => {
                           <Building2 className='h-5 w-5 text-muted-foreground' />
                         </div>
                         <span className='text-base sm:text-lg font-semibold'>
-                          {company}
+                          {item.company}
                         </span>
                       </div>
                       <div>
                         <h3 className='text-lg sm:text-xl font-medium'>
-                          {title}
+                          {item.role}
                         </h3>
                         <div className='flex items-center gap-2 mt-1 text-sm'>
                           <Calendar className='h-4 w-4' />
-                          <span>{period}</span>
+                          <span>
+                            {startDate} – {endDate}
+                          </span>
                         </div>
                       </div>
-                      <p className='text-sm md:text-base  text-primary'>
-                        {description}
-                      </p>
-                      <div className='flex flex-wrap gap-2'>
-                        {technologies.map((tech) => (
-                          <Badge
-                            key={tech}
-                            variant='secondary'
-                            className='rounded-full'
-                          >
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
+                      {item.description && (
+                        <p className='text-sm md:text-base text-primary'>
+                          {item.description}
+                        </p>
+                      )}
+                      {item.techStack?.length > 0 && (
+                        <div className='flex flex-wrap gap-2'>
+                          {item.techStack.map((tech: string) => (
+                            <Badge
+                              key={tech}
+                              variant='secondary'
+                              className='rounded-full'
+                            >
+                              {tech}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
-                )
+                );
+              })}
+              {workData?.length === 0 && (
+                <p className='pl-8 text-muted-foreground'>
+                  No work experience entries yet.
+                </p>
               )}
             </div>
           </TabsContent>
