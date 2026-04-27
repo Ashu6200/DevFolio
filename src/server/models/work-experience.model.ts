@@ -8,7 +8,8 @@ export interface IWorkExperience extends Document {
   startDate: Date;
   endDate?: Date;
   current: boolean;
-  description: string;
+  description: Record<string, unknown>;
+  attachments: string[];
   order: number;
   createdAt: Date;
   updatedAt: Date;
@@ -23,7 +24,8 @@ const WorkExperienceSchema = new Schema<IWorkExperience>(
     startDate: { type: Date, required: true },
     endDate: { type: Date },
     current: { type: Boolean, default: false },
-    description: { type: String, default: '' },
+    description: { type: Schema.Types.Mixed, required: true },
+    attachments: [{ type: String }],
     order: { type: Number, default: 0 },
   },
   { timestamps: true }

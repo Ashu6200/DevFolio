@@ -1,43 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const ACTIVATION_PATH = process.env.ACTIVATION_PATH || '/activate';
+const ACTIVATION_KEY = process.env.ACTIVATION_KEY;
+
 const PUBLIC_PATHS = ['/', '/about', '/projects', '/contact', '/blogs'];
-const AUTH_PATHS = ['/sign-in', '/sign-up'];
 
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip static files and API routes
   if (
     pathname.startsWith('/_next') ||
-    pathname.startsWith('/images') ||
-    pathname.startsWith('/api')
+    pathname.startsWith('/images')
   ) {
     return NextResponse.next();
   }
 
-  // Public routes — always allow
+  if (pathname.startsWith(ACTIVATION_PATH)) {
+    const providedKey = pathname.slice(ACTIVATION_PATH.length).replace(/^\//, '');
+
+    if (ACTIVATION_KEY && providedKey === ACTIVATION_KEY) {
+      const response = NextResponse.redirect(new URL('/', request.url));
+      response.cookies.set('admin_unlocked', 'true', {
+        path: '/',
+        sameSite: 'strict',
+      });
+      return response;
+    }
+
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  if (pathname.startsWith('/sign-up') || pathname.startsWith('/sign-in')) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  if (pathname.startsWith('/api/auth/sign-up')) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
   if (PUBLIC_PATHS.some((p) => pathname === p)) {
     return NextResponse.next();
   }
 
-  // Check for better-auth session cookie
   const sessionCookie =
     request.cookies.get('better-auth.session_token') ||
     request.cookies.get('__Secure-better-auth.session_token');
   const isAuthenticated = !!sessionCookie;
 
-  // Auth pages — redirect to dashboard if already authenticated
-  if (AUTH_PATHS.some((p) => pathname.startsWith(p))) {
-    if (isAuthenticated) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
-    return NextResponse.next();
-  }
-
-  // Dashboard routes — redirect to sign-in if not authenticated
   if (pathname.startsWith('/dashboard')) {
     if (!isAuthenticated) {
-      return NextResponse.redirect(new URL('/sign-in', request.url));
+      return NextResponse.redirect(new URL('/', request.url));
     }
     return NextResponse.next();
   }

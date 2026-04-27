@@ -1,4 +1,4 @@
-import { auth } from '@/utils/auth';
+import { getAuth } from '@/utils/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import DashboardSidebar from '@/components/dashboard/sidebar';
@@ -10,13 +10,14 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const auth = await getAuth();
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect('/sign-in');
+  if (!session) redirect('/');
 
   return (
-    <div className='flex min-h-screen'>
+    <div className='flex max-h-screen'>
       <DashboardSidebar user={session.user} />
-      <main className='flex-1 overflow-y-auto p-4 md:p-8'>{children}</main>
+      <main className='flex-1 overflow-y-auto px-4 pt-4'>{children}</main>
     </div>
   );
 }

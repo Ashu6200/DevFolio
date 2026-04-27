@@ -1,13 +1,17 @@
 'use client';
 
 import { trpc } from '@/utils/trpc';
+import { educationFormSchema, type EducationFormValues } from '@/lib/schemas/form-schemas';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import React, { useState } from 'react';
+import TipTapEditor from '@/components/editor/tiptap-editor';
+import { useForm, Controller, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import { format } from 'date-fns';
+import { DateRangePicker } from '@/components/ui/date-range-picker';
 
 interface EducationFormProps {
   initialData?: {
@@ -18,7 +22,7 @@ interface EducationFormProps {
     startDate: string;
     endDate?: string;
     current: boolean;
-    description: string;
+    description: Record<string, unknown>;
     highlights: string[];
     order: number;
   };
@@ -32,169 +36,148 @@ export default function EducationForm({
   onCancel,
 }: EducationFormProps) {
   const utils = trpc.useUtils();
-  const [institution, setInstitution] = useState(initialData?.institution ?? '');
-  const [degree, setDegree] = useState(initialData?.degree ?? '');
-  const [field, setField] = useState(initialData?.field ?? '');
-  const [startDate, setStartDate] = useState(
-    initialData?.startDate ? new Date(initialData.startDate).toISOString().split('T')[0] : ''
-  );
-  const [endDate, setEndDate] = useState(
-    initialData?.endDate ? new Date(initialData.endDate).toISOString().split('T')[0] : ''
-  );
-  const [current, setCurrent] = useState(initialData?.current ?? false);
-  const [description, setDescription] = useState(initialData?.description ?? '');
-  const [highlightsStr, setHighlightsStr] = useState(
-    initialData?.highlights?.join(', ') ?? ''
-  );
-  const [order, setOrder] = useState(initialData?.order ?? 0);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<EducationFormValues>({
+    resolver: zodResolver(educationFormSchema),
+    defaultValues: {
+      institution: initialData?.institution ?? '',
+      degree: initialData?.degree ?? '',
+      field: initialData?.field ?? '',
+      startDate: initialData?.startDate
+        ? format(new Date(initialData.startDate), 'yyyy-MM-dd')
+        : '',
+      endDate: initialData?.endDate
+        ? format(new Date(initialData.endDate), 'yyyy-MM-dd')
+        : '',
+      current: initialData?.current ?? false,
+      description: initialData?.description ?? { type: 'doc', content: [{ type: 'paragraph' }] },
+      highlights: initialData?.highlights?.join(', ') ?? '',
+      order: initialData?.order ?? 0,
+    },
+  });
+
+  const [isCurrent, startDateVal, endDateVal] = useWatch({
+    control,
+    name: ['current', 'startDate', 'endDate'],
+  });
 
   const createMutation = trpc.education.create.useMutation({
-    onSuccess: () => {
-      utils.education.list.invalidate();
-      onSuccess();
-    },
+    onSuccess: () => { utils.education.list.invalidate(); onSuccess(); },
   });
-
   const updateMutation = trpc.education.update.useMutation({
-    onSuccess: () => {
-      utils.education.list.invalidate();
-      onSuccess();
-    },
+    onSuccess: () => { utils.education.list.invalidate(); onSuccess(); },
   });
 
-  const loading = createMutation.isPending || updateMutation.isPending;
-  const error = createMutation.error?.message || updateMutation.error?.message;
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const highlights = highlightsStr
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
-
+  function onSubmit(values: EducationFormValues) {
+    const highlights = values.highlights.split(',').map((s) => s.trim()).filter(Boolean);
     const payload = {
-      institution,
-      degree,
-      field,
-      startDate: new Date(startDate).toISOString(),
-      endDate: current ? undefined : endDate ? new Date(endDate).toISOString() : undefined,
-      current,
-      description,
+      institution: values.institution,
+      degree: values.degree,
+      field: values.field,
+      startDate: new Date(values.startDate).toISOString(),
+      endDate: values.current
+        ? undefined
+        : values.endDate ? new Date(values.endDate).toISOString() : undefined,
+      current: values.current,
+      description: values.description as { type: 'doc'; content: Record<string, unknown>[] },
       highlights,
-      order,
+      order: values.order,
     };
 
+    const onError = (e: { message: string }) =>
+      setError('root', { message: e.message });
+
     if (initialData?._id) {
-      updateMutation.mutate({ id: initialData._id, ...payload });
+      updateMutation.mutate({ id: initialData._id, ...payload }, { onError });
     } else {
-      createMutation.mutate(payload);
+      createMutation.mutate(payload, { onError });
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-4'>
-      {error && (
+    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+      {errors.root && (
         <div className='rounded-md bg-destructive/10 p-3 text-sm text-destructive'>
-          {error}
+          {errors.root.message}
         </div>
       )}
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
         <div className='space-y-2'>
           <Label htmlFor='institution'>Institution</Label>
-          <Input
-            id='institution'
-            value={institution}
-            onChange={(e) => setInstitution(e.target.value)}
-            required
-          />
+          <Input id='institution' {...register('institution')} />
+          {errors.institution && <p className='text-xs text-destructive'>{errors.institution.message}</p>}
         </div>
         <div className='space-y-2'>
           <Label htmlFor='degree'>Degree</Label>
-          <Input
-            id='degree'
-            value={degree}
-            onChange={(e) => setDegree(e.target.value)}
-            required
-          />
+          <Input id='degree' {...register('degree')} />
+          {errors.degree && <p className='text-xs text-destructive'>{errors.degree.message}</p>}
         </div>
       </div>
 
       <div className='space-y-2'>
         <Label htmlFor='field'>Field of Study</Label>
-        <Input
-          id='field'
-          value={field}
-          onChange={(e) => setField(e.target.value)}
-          required
-        />
+        <Input id='field' {...register('field')} />
+        {errors.field && <p className='text-xs text-destructive'>{errors.field.message}</p>}
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <div className='space-y-2'>
-          <Label htmlFor='startDate'>Start Date</Label>
-          <Input
-            id='startDate'
-            type='date'
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            required
-          />
-        </div>
-        <div className='space-y-2'>
-          <Label htmlFor='endDate'>End Date</Label>
-          <Input
-            id='endDate'
-            type='date'
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            disabled={current}
-          />
-        </div>
+      <div className='space-y-2'>
+        <Label>Date Range</Label>
+        <DateRangePicker
+          from={startDateVal ? new Date(startDateVal) : undefined}
+          to={!isCurrent && endDateVal ? new Date(endDateVal) : undefined}
+          toDisabled={isCurrent}
+          onSelect={(range) => {
+            setValue('startDate', range?.from ? format(range.from, 'yyyy-MM-dd') : '', { shouldValidate: true });
+            setValue('endDate', range?.to ? format(range.to, 'yyyy-MM-dd') : '', { shouldValidate: true });
+          }}
+        />
+        {errors.startDate && <p className='text-xs text-destructive'>{errors.startDate.message}</p>}
       </div>
 
       <div className='flex items-center gap-2'>
-        <Switch id='current' checked={current} onCheckedChange={setCurrent} />
+        <Controller
+          name='current'
+          control={control}
+          render={({ field }) => (
+            <Switch id='current' checked={field.value} onCheckedChange={field.onChange} />
+          )}
+        />
         <Label htmlFor='current'>Currently studying here</Label>
       </div>
 
       <div className='space-y-2'>
-        <Label htmlFor='description'>Description</Label>
-        <Textarea
-          id='description'
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={3}
+        <Label>Description</Label>
+        <Controller
+          name='description'
+          control={control}
+          render={({ field }) => (
+            <TipTapEditor content={field.value} onChange={field.onChange} />
+          )}
         />
       </div>
 
       <div className='space-y-2'>
         <Label htmlFor='highlights'>Highlights (comma-separated)</Label>
-        <Input
-          id='highlights'
-          value={highlightsStr}
-          onChange={(e) => setHighlightsStr(e.target.value)}
-          placeholder='e.g. Dean&#39;s List, Research Award'
-        />
+        <Input id='highlights' placeholder="e.g. Dean's List, Research Award" {...register('highlights')} />
       </div>
 
       <div className='space-y-2'>
         <Label htmlFor='order'>Display Order</Label>
-        <Input
-          id='order'
-          type='number'
-          value={order}
-          onChange={(e) => setOrder(Number(e.target.value))}
-          min={0}
-        />
+        <Input id='order' type='number' min={0} {...register('order', { valueAsNumber: true })} />
       </div>
 
       <div className='flex gap-2 justify-end'>
-        <Button type='button' variant='outline' onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type='submit' disabled={loading}>
-          {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+        <Button type='button' variant='outline' onClick={onCancel}>Cancel</Button>
+        <Button type='submit' disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
           {initialData ? 'Update' : 'Create'}
         </Button>
       </div>

@@ -2,6 +2,7 @@
 
 import { trpc } from '@/utils/trpc';
 import { Button } from '@/components/ui/button';
+import { TipTapRenderer } from '@/components/editor/tiptap-renderer';
 import {
   Card,
   CardContent,
@@ -12,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import EducationForm from '@/components/dashboard/education-form';
 import React, { useState } from 'react';
 import { Plus, Pencil, Trash2, GraduationCap, Calendar } from 'lucide-react';
+import { format } from 'date-fns';
 
 export default function EducationPage() {
   const { data: items, isLoading } = trpc.education.list.useQuery();
@@ -132,16 +134,19 @@ export default function EducationPage() {
                     <div className='flex items-center gap-2 text-sm text-muted-foreground'>
                       <Calendar className='h-3 w-3' />
                       <span>
-                        {new Date(item.startDate as unknown as string).toLocaleDateString()} –{' '}
+                        {format(new Date(item.startDate as unknown as string), 'MMM yyyy')} –{' '}
                         {item.current
                           ? 'Present'
                           : item.endDate
-                            ? new Date(item.endDate as unknown as string).toLocaleDateString()
+                            ? format(new Date(item.endDate as unknown as string), 'MMM yyyy')
                             : ''}
                       </span>
                     </div>
-                    {item.description && (
-                      <p className='text-sm mt-2'>{item.description}</p>
+                    {item.description && typeof item.description === 'object' && (
+                      <TipTapRenderer
+                        content={item.description as Record<string, unknown>}
+                        className='prose-sm mt-2'
+                      />
                     )}
                     {item.highlights?.length > 0 && (
                       <div className='flex flex-wrap gap-1 mt-2'>

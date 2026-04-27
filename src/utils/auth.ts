@@ -1,6 +1,6 @@
-import { connectToDatabase } from '@/server/db/mongoose';
-import { betterAuth } from 'better-auth';
-import { mongodbAdapter } from 'better-auth/adapters/mongodb';
+import { connectToDatabase } from "@/server/db/mongoose";
+import { betterAuth } from "better-auth";
+import { mongodbAdapter } from "better-auth/adapters/mongodb";
 
 let authInstance: ReturnType<typeof betterAuth> | null = null;
 
@@ -19,20 +19,14 @@ export async function getAuth() {
       enabled: true,
       minPasswordLength: 8,
       maxPasswordLength: 128,
+      requireEmailVerification: false,
       autoSignIn: true,
-    },
-
-    socialProviders: {
-      google: {
-        clientId: process.env.GOOGLE_CLIENT_ID as string,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      },
     },
 
     session: {
       additionalFields: {
         fingerprintHash: {
-          type: 'string',
+          type: "string",
           required: false,
           returned: true,
           input: false,
@@ -43,11 +37,11 @@ export async function getAuth() {
     user: {
       additionalFields: {
         bio: {
-          type: 'string',
+          type: "string",
           required: false,
           returned: true,
           input: true,
-          defaultValue: '',
+          defaultValue: "",
         },
       },
     },
@@ -57,8 +51,8 @@ export async function getAuth() {
       window: 60,
       max: 100,
       customRules: {
-        '/sign-in/email': { window: 60, max: 5 },
-        '/sign-up/email': { window: 60, max: 3 },
+        "/sign-in/email": { window: 60, max: 5 },
+        "/sign-up/email": { window: 60, max: 3 },
       },
     },
 
@@ -66,7 +60,7 @@ export async function getAuth() {
       session: {
         create: {
           before: async (session, context) => {
-            const fpHash = context?.headers?.get('x-fingerprint-hash');
+            const fpHash = context?.headers?.get("x-fingerprint-hash");
             if (fpHash) {
               return {
                 data: { ...session, fingerprintHash: fpHash },
@@ -75,7 +69,7 @@ export async function getAuth() {
           },
           after: async (session) => {
             await db
-              .collection('session')
+              .collection("session")
               .deleteMany({ userId: session.userId, id: { $ne: session.id } });
           },
         },
@@ -85,5 +79,3 @@ export async function getAuth() {
 
   return authInstance;
 }
-
-export const auth = await getAuth();

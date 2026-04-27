@@ -6,10 +6,22 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { navItems } from '@/constant';
 import ThemeToggle from './theme-toggle';
+import { LogIn } from 'lucide-react';
+import LoginModal from './login-modal';
 
 const Navbar = () => {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [showLogin, setShowLogin] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      setShowLogin(
+        document.cookie.split(';').some((c) => c.trim() === 'admin_unlocked=true')
+      );
+    }
+  }, []);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +33,8 @@ const Navbar = () => {
 
   return (
     <>
+      <LoginModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
       <div className='hidden md:block fixed top-4 inset-x-0 z-50 pointer-events-none'>
         <div className='flex justify-center'>
           <motion.nav
@@ -64,13 +78,23 @@ const Navbar = () => {
                   </Link>
                 );
               })}
-              <div className='ml-2'>
+              <div className='ml-2 flex items-center gap-1'>
                 <ThemeToggle />
+                {showLogin && (
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className='flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-accent-foreground hover:text-foreground transition-colors cursor-pointer'
+                  >
+                    <LogIn className='w-4 h-4' />
+                    Login
+                  </button>
+                )}
               </div>
             </div>
           </motion.nav>
         </div>
       </div>
+
       <div className='md:hidden fixed bottom-4 inset-x-0 z-50 pointer-events-none'>
         <div className='flex justify-center'>
           <motion.nav
@@ -104,8 +128,17 @@ const Navbar = () => {
                   </Link>
                 );
               })}
-              <div className='ml-1'>
+              <div className='ml-1 flex items-center gap-1'>
                 <ThemeToggle />
+                {showLogin && (
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className='flex items-center justify-center p-2.5 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer'
+                    aria-label='Login'
+                  >
+                    <LogIn className='w-5 h-5' />
+                  </button>
+                )}
               </div>
             </div>
           </motion.nav>

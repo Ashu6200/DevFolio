@@ -4,11 +4,11 @@ import React from 'react';
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className='min-h-screen'>
+    <div className='min-h-screen'>
       <Navbar />
       {children}
       <Footer />
-    </main>
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import { auth } from '@/utils/auth';
+import { getAuth } from '@/utils/auth';
 import { Context } from './context';
 import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
@@ -21,6 +21,7 @@ function isSameSubnet(ip1: string, ip2: string): boolean {
 
 export const protectedProcedure = t.procedure.use(async (opts) => {
   const reqHeaders = await headers();
+  const auth = await getAuth();
   const session = await auth.api.getSession({
     headers: reqHeaders,
   });

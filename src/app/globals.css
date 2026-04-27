@@ -45,30 +45,44 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
   --animate-shine: shine var(--duration) infinite linear;
+
   @keyframes shine {
-  0% {
-    background-position: 0% 0%;
+    0% {
+      background-position: 0% 0%;
     }
-  50% {
-    background-position: 100% 100%;
+
+    50% {
+      background-position: 100% 100%;
     }
-  to {
-    background-position: 0% 0%;
+
+    to {
+      background-position: 0% 0%;
     }
   }
+
   --animate-marquee: marquee var(--duration) infinite linear;
-  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite
-;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+
   @keyframes marquee {
-  from {
-    transform: translateX(0);}
-  to {
-    transform: translateX(calc(-100% - var(--gap)));}}
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+
   @keyframes marquee-vertical {
-  from {
-    transform: translateY(0);}
-  to {
-    transform: translateY(calc(-100% - var(--gap)));}}}
+    from {
+      transform: translateY(0);
+    }
+
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+}
 
 :root {
   --radius: 0.625rem;
@@ -160,6 +174,33 @@
         #FE8FB5 40%,
         #FFBE7B 100%);
 
+  }
+
+  /* tiptap-editor.css or globals.css */
+
+  .ProseMirror ul {
+    list-style-type: disc;
+    padding-left: 1.625rem;
+    margin: 0.75rem 0;
+  }
+
+  .ProseMirror ol {
+    list-style-type: decimal;
+    padding-left: 1.625rem;
+    margin: 0.75rem 0;
+  }
+
+  .ProseMirror li {
+    margin: 0.25rem 0;
+  }
+
+  /* Nested lists */
+  .ProseMirror ul ul {
+    list-style-type: circle;
+  }
+
+  .ProseMirror ul ul ul {
+    list-style-type: square;
   }
 
   @media screen and (max-width: 420px) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { trpc } from '@/utils/trpc';
+import { TipTapRenderer } from '@/components/editor/tiptap-renderer';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -10,8 +11,9 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import WorkForm from '@/components/dashboard/work-form';
-import React, { useState } from 'react';
-import { Plus, Pencil, Trash2, Briefcase, Calendar } from 'lucide-react';
+import { useState } from 'react';
+import { Plus, Pencil, Trash2, Briefcase, Calendar, Paperclip } from 'lucide-react';
+import { format } from 'date-fns';
 
 export default function WorkPage() {
   const { data: items, isLoading } = trpc.work.list.useQuery();
@@ -74,6 +76,7 @@ export default function WorkPage() {
                       endDate: editItem.endDate as unknown as string | undefined,
                       current: editItem.current,
                       description: editItem.description,
+                      attachments: (editItem.attachments as string[]) ?? [],
                       order: editItem.order,
                     }
                   : undefined
@@ -129,16 +132,19 @@ export default function WorkPage() {
                     <div className='flex items-center gap-2 text-sm text-muted-foreground'>
                       <Calendar className='h-3 w-3' />
                       <span>
-                        {new Date(item.startDate as unknown as string).toLocaleDateString()} –{' '}
+                        {format(new Date(item.startDate as unknown as string), 'MMM yyyy')} –{' '}
                         {item.current
                           ? 'Present'
                           : item.endDate
-                            ? new Date(item.endDate as unknown as string).toLocaleDateString()
+                            ? format(new Date(item.endDate as unknown as string), 'MMM yyyy')
                             : ''}
                       </span>
                     </div>
-                    {item.description && (
-                      <p className='text-sm mt-2'>{item.description}</p>
+                    {item.description && typeof item.description === 'object' && (
+                      <TipTapRenderer
+                        content={item.description as Record<string, unknown>}
+                        className='prose-sm mt-2'
+                      />
                     )}
                     {item.techStack?.length > 0 && (
                       <div className='flex flex-wrap gap-1 mt-2'>
@@ -146,6 +152,22 @@ export default function WorkPage() {
                           <Badge key={t} variant='secondary' className='text-xs'>
                             {t}
                           </Badge>
+                        ))}
+                      </div>
+                    )}
+                    {(item.attachments as string[])?.length > 0 && (
+                      <div className='flex flex-wrap gap-x-3 gap-y-1 mt-2'>
+                        {(item.attachments as string[]).map((url: string) => (
+                          <a
+                            key={url}
+                            href={url}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='flex items-center gap-1 text-xs text-primary underline'
+                          >
+                            <Paperclip className='h-3 w-3' />
+                            {decodeURIComponent(url.split('/').pop() ?? url)}
+                          </a>
                         ))}
                       </div>
                     )}

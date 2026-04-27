@@ -36,15 +36,17 @@ export default function DashboardSidebar({ user }: SidebarProps) {
 
   async function handleSignOut() {
     await authClient.signOut();
-    window.location.href = '/sign-in';
+    document.cookie =
+      'admin_unlocked=; Max-Age=0; path=/; SameSite=Strict';
+    window.location.href = '/';
   }
 
   const sidebarContent = (
     <div className='flex flex-col h-full'>
       <div className='p-4'>
-        <Link href='/' className='text-lg font-bold'>
+        <div onClick={handleSignOut} className='text-lg font-bold'>
           DevFolio
-        </Link>
+        </div>
         <p className='text-sm text-muted-foreground mt-1 truncate'>
           {user.name || user.email}
         </p>
@@ -95,7 +97,6 @@ export default function DashboardSidebar({ user }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile toggle */}
       <Button
         variant='ghost'
         size='sm'
@@ -105,7 +106,6 @@ export default function DashboardSidebar({ user }: SidebarProps) {
         {mobileOpen ? <X className='h-5 w-5' /> : <Menu className='h-5 w-5' />}
       </Button>
 
-      {/* Mobile overlay */}
       {mobileOpen && (
         <div
           className='fixed inset-0 z-40 bg-black/50 md:hidden'
@@ -113,7 +113,6 @@ export default function DashboardSidebar({ user }: SidebarProps) {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={cn(
           'fixed z-40 h-screen w-64 border-r bg-background transition-transform md:static md:translate-x-0',

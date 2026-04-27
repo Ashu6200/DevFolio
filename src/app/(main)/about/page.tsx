@@ -13,6 +13,8 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { TipTapRenderer } from '@/components/editor/tiptap-renderer';
+import { format } from 'date-fns';
 import { motion } from 'motion/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
@@ -153,21 +155,11 @@ const AboutPage = () => {
                 </div>
               )}
               {educationData?.map((item, index) => {
-                const startDate = new Date(
-                  item.startDate as unknown as string
-                ).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                });
+                const startDate = format(new Date(item.startDate as unknown as string), 'MMM yyyy');
                 const endDate = item.current
                   ? 'Present'
                   : item.endDate
-                    ? new Date(
-                        item.endDate as unknown as string
-                      ).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                      })
+                    ? format(new Date(item.endDate as unknown as string), 'MMM yyyy')
                     : '';
 
                 return (
@@ -175,7 +167,7 @@ const AboutPage = () => {
                     <div className='absolute h-3 w-3 -translate-x-1/2 left-px top-3 rounded-full border-2 border-primary bg-background' />
                     <div className='space-y-3'>
                       <div className='flex items-center gap-3'>
-                        <div className='flex-shrink-0 h-9 w-9 bg-primary rounded-full flex items-center justify-center'>
+                        <div className='shrink-0 h-9 w-9 bg-primary rounded-full flex items-center justify-center'>
                           <Building2 className='h-5 w-5 text-background' />
                         </div>
                         <span className='text-base sm:text-lg font-semibold'>
@@ -193,10 +185,11 @@ const AboutPage = () => {
                           </span>
                         </div>
                       </div>
-                      {item.description && (
-                        <p className='text-sm md:text-base text-primary'>
-                          {item.description}
-                        </p>
+                      {item.description && typeof item.description === 'object' && (
+                        <TipTapRenderer
+                          content={item.description as Record<string, unknown>}
+                          className='prose-sm text-primary'
+                        />
                       )}
                       {item.highlights?.length > 0 && (
                         <div className='flex flex-wrap gap-2'>
@@ -237,21 +230,11 @@ const AboutPage = () => {
                 </div>
               )}
               {workData?.map((item, index) => {
-                const startDate = new Date(
-                  item.startDate as unknown as string
-                ).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                });
+                const startDate = format(new Date(item.startDate as unknown as string), 'MMM yyyy');
                 const endDate = item.current
                   ? 'Present'
                   : item.endDate
-                    ? new Date(
-                        item.endDate as unknown as string
-                      ).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                      })
+                    ? format(new Date(item.endDate as unknown as string), 'MMM yyyy')
                     : '';
 
                 return (
@@ -259,7 +242,7 @@ const AboutPage = () => {
                     <div className='absolute h-3 w-3 -translate-x-1/2 left-px top-3 rounded-full border-2 border-primary bg-background' />
                     <div className='space-y-3'>
                       <div className='flex items-center gap-3'>
-                        <div className='flex-shrink-0 h-9 w-9 bg-accent rounded-full flex items-center justify-center'>
+                        <div className='shrink-0 h-9 w-9 bg-accent rounded-full flex items-center justify-center'>
                           <Building2 className='h-5 w-5 text-muted-foreground' />
                         </div>
                         <span className='text-base sm:text-lg font-semibold'>
@@ -277,10 +260,11 @@ const AboutPage = () => {
                           </span>
                         </div>
                       </div>
-                      {item.description && (
-                        <p className='text-sm md:text-base text-primary'>
-                          {item.description}
-                        </p>
+                      {item.description && typeof item.description === 'object' && (
+                        <TipTapRenderer
+                          content={item.description as Record<string, unknown>}
+                          className='prose-sm text-primary'
+                        />
                       )}
                       {item.techStack?.length > 0 && (
                         <div className='flex flex-wrap gap-2'>

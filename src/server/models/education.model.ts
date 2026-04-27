@@ -8,7 +8,7 @@ export interface IEducation extends Document {
   startDate: Date;
   endDate?: Date;
   current: boolean;
-  description: string;
+  description: Record<string, unknown>;
   highlights: string[];
   order: number;
   createdAt: Date;
@@ -24,7 +24,7 @@ const EducationSchema = new Schema<IEducation>(
     startDate: { type: Date, required: true },
     endDate: { type: Date },
     current: { type: Boolean, default: false },
-    description: { type: String, default: '' },
+    description: { type: Schema.Types.Mixed, required: true },
     highlights: [{ type: String }],
     order: { type: Number, default: 0 },
   },
