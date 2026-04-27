@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import { GraduationCap, Briefcase, FolderKanban } from 'lucide-react';
 import Link from 'next/link';
+import ResumeManager from '@/components/dashboard/resume-manager';
 
 export default function DashboardPage() {
   const { data: education } = trpc.education.list.useQuery();
@@ -68,6 +69,10 @@ export default function DashboardPage() {
             </Link>
           );
         })}
+      </div>
+
+      <div className='grid grid-cols-1 gap-4'>
+        <ResumeManager />
       </div>
     </div>
   );

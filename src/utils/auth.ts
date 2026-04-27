@@ -43,6 +43,13 @@ export async function getAuth() {
           input: true,
           defaultValue: "",
         },
+        resumeUrl: {
+          type: "string",
+          required: false,
+          returned: true,
+          input: true,
+          defaultValue: "",
+        },
       },
     },
 

@@ -1,4 +1,5 @@
-import { protectedProcedure, router } from '../trpc';
+import { protectedProcedure, router, publicProcedure } from '../trpc';
+import mongoose from 'mongoose';
 
 export const userRouter = router({
   me: protectedProcedure.query(async ({ ctx }) => {
@@ -19,6 +20,17 @@ export const userRouter = router({
       createdAt: ctx.session.session.createdAt,
       expiresAt: ctx.session.session.expiresAt,
       fingerprintHash: (s.fingerprintHash as string) || null,
+    };
+  }),
+
+  publicProfile: publicProcedure.query(async () => {
+    const db = mongoose.connection.getClient().db();
+    const user = await db.collection('user').findOne({});
+    if (!user) return null;
+    return {
+      name: user.name,
+      bio: user.bio,
+      resumeUrl: user.resumeUrl,
     };
   }),
 });

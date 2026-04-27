@@ -20,34 +20,53 @@ type Skill = {
 export const skills: Skill[] = [
   {
     icon: '⚙️',
-    text: 'Build RESTful and GraphQL APIs using Node.js & Express',
+    text: 'Design and build scalable RESTful and GraphQL APIs using Node.js, Express, and modular architecture patterns',
   },
   {
     icon: '🧠',
-    text: 'Create high-performance UI with React + Redux Toolkit',
+    text: 'Develop high-performance, responsive user interfaces using React, Next.js, and Redux Toolkit with optimized state management',
   },
   {
     icon: '🔒',
-    text: 'Implement secure authentication using JWT, OAuth, and 2FA',
+    text: 'Implement secure authentication systems using JWT, OAuth, 2FA, and role-based access control (RBAC)',
   },
   {
     icon: '📦',
-    text: 'Integrate third-party services and external APIs seamlessly',
-  },
-  {
-    icon: '🚀',
-    text: 'Deploy applications on Vercel, Render, and Heroku',
-  },
-  {
-    icon: '📊',
-    text: 'Work with both SQL and NoSQL databases',
+    text: 'Integrate third-party services (payments, shipping, notifications) with secure authentication, webhooks, retries, and error handling',
   },
   {
     icon: '⚡',
-    text: 'Follow clean code practices, Git workflows, and CI/CD pipelines',
+    text: 'Build real-time features like chat and notifications using Socket.IO and event-driven communication',
+  },
+  {
+    icon: '🔄',
+    text: 'Design event-driven systems using Redis, BullMQ, and messaging queues like NATS for background processing',
+  },
+  {
+    icon: '🏗️',
+    text: 'Architect scalable microservices-based systems for better modularity, performance, and maintainability',
+  },
+  {
+    icon: '📊',
+    text: 'Work with PostgreSQL and MongoDB, focusing on efficient schema design, indexing, and query optimization',
+  },
+  {
+    icon: '🚀',
+    text: 'Deploy and manage applications on Vercel, Render, and cloud platforms with focus on performance and reliability',
+  },
+  {
+    icon: '🛠️',
+    text: 'Build admin dashboards and internal tools to manage users, analytics, and operational workflows',
+  },
+  {
+    icon: '💳',
+    text: 'Integrate payment systems like Razorpay and handle transactions, order lifecycle, and webhook processing',
+  },
+  {
+    icon: '⚡',
+    text: 'Follow clean code principles, Git workflows, and CI/CD pipelines to deliver production-ready applications',
   },
 ];
-
 type TechSkill = {
   icon: React.ReactNode;
   text: string;

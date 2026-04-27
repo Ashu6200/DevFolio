@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-interface ShineBorderProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ShineBorderProps extends React.HTMLAttributes<HTMLSpanElement> {
   /**
    * Width of the border in pixels
    * @default 1
@@ -36,7 +36,7 @@ export function ShineBorder({
   ...props
 }: ShineBorderProps) {
   return (
-    <div
+    <span
       style={
         {
           "--border-width": `${borderWidth}px`,
@@ -54,7 +54,7 @@ export function ShineBorder({
         } as React.CSSProperties
       }
       className={cn(
-        "motion-safe:animate-shine pointer-events-none absolute inset-0 size-full rounded-[inherit] will-change-[background-position]",
+        "motion-safe:animate-shine pointer-events-none absolute inset-0 size-full rounded-[inherit] will-change-[background-position] block",
         className
       )}
       {...props}
