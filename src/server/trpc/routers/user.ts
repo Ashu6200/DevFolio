@@ -30,7 +30,6 @@ export const userRouter = router({
     return {
       name: user.name,
       bio: user.bio,
-      resumeUrl: user.resumeUrl,
     };
   }),
 });

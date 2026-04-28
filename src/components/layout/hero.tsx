@@ -12,12 +12,10 @@ const Hero = () => {
 
   return (
     <section className='relative min-h-screen flex items-center justify-center overflow-hidden py-24'>
-      {/* Subtle dotted background */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#262626_1px,transparent_1px)] [background-size:16px_16px] opacity-40 [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
 
       <div className='relative z-10 flex px-6 md:px-8 flex-col items-center justify-center w-full max-w-4xl mx-auto space-y-10'>
 
-        {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -35,7 +33,6 @@ const Hero = () => {
           </span>
         </motion.div>
 
-        {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -49,7 +46,6 @@ const Hero = () => {
             </span>{" "}
           </h1>
         </motion.div>
-
         {/* Description */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

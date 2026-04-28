@@ -1,8 +1,10 @@
 import { headers } from 'next/headers';
+import { connectToDatabase } from '@/server/db/mongoose';
 
 export async function createContext() {
+  await connectToDatabase();
   return {
-    headers: headers(),
+    headers: await headers(),
   };
 }
 
