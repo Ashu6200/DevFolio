@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { ShineBorder } from '../ui/shine-border';
 import { motion } from 'motion/react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -45,11 +44,6 @@ const Navbar = () => {
               isScrolled ? 'backdrop-blur-md shadow-lg' : 'backdrop-blur-sm '
             } rounded-full px-4 py-2`}
           >
-            <ShineBorder
-              shineColor={['#A07CFE', '#FE8FB5', '#FFBE7B']}
-              duration={8}
-              borderWidth={1}
-            />
             <div className='flex items-center gap-1'>
               {navItems.map((item) => {
                 const Icon = item.icon;

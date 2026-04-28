@@ -40,11 +40,11 @@ const AboutPage = () => {
             <div className='relative w-80 h-80'>
               <div className='w-full h-full relative overflow-hidden rounded-full'>
                 <Image
-                  src='/images/hero.webp'
+                  src='/images/MY.webp'
                   alt='Profile'
                   width={256}
                   height={256}
-                  className='object-cover w-full h-full'
+                  className='object-cover w-full h-full hover:scale-105 transition-all duration-500'
                 />
               </div>
               <div className='z-10 absolute -bottom-3 right-3 bg-background text-foreground px-3 py-1 rounded-full text-sm font-medium border'>

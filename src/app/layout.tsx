@@ -27,18 +27,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <GlobalProvider>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased relative overflow-x-hidden`}
+      >
+        <GlobalProvider>
           <ThemeProvider attribute='class' defaultTheme='light' enableSystem>
-            <div className='w-full flex items-center justify-center relative'>
-              <div className='blurSpot'></div>
-            </div>
+            <div className='absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none' />
             {children}
           </ThemeProvider>
-        </body>
-      </GlobalProvider>
+        </GlobalProvider>
+      </body>
     </html>
   );
 }
