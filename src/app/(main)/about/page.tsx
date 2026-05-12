@@ -56,19 +56,19 @@ const AboutPage = () => {
           <div className='lg:col-span-2 space-y-4'>
             <div>
               <h1 className='text-4xl font-bold mb-2'>Ashutosh Kewat</h1>
-              <p className='text-sm md:text-base text-primary mb-4'>
+              <p className='text-sm md:text-base mb-4'>
                 MERN Stack Developer
               </p>
               <div className='flex items-center gap-4 text-muted-foreground mb-6'>
                 <div className='flex items-center gap-1'>
                   <MapPin className='w-2 h-2' />
-                  <span className='text-sm md:text-base text-primary'>
+                  <span className='text-sm md:text-base'>
                     Janjgir-Champa, Chhattisgarh
                   </span>
                 </div>
                 <div className='flex items-center gap-1'>
                   <Calendar className='w-2 h-2' />
-                  <span className='text-sm md:text-base text-primary'>
+                  <span className='text-sm md:text-base'>
                     1.5+ years experience
                   </span>
                 </div>
@@ -95,7 +95,7 @@ const AboutPage = () => {
               </Button>
             </div>
 
-            <p className='text-sm md:text-base text-primary leading-relaxed'>
+            <p className='text-sm md:text-base leading-relaxed'>
               {`I'm a passionate full-stack developer with expertise in the MERN
               stack. I love creating scalable web applications that solve
               real-world problems and deliver exceptional user experiences. When
@@ -188,7 +188,7 @@ const AboutPage = () => {
                       {item.description && typeof item.description === 'object' && (
                         <TipTapRenderer
                           content={item.description as Record<string, unknown>}
-                          className='prose-sm text-primary'
+                          className='prose-sm'
                         />
                       )}
                       {item.highlights?.length > 0 && (
@@ -263,7 +263,7 @@ const AboutPage = () => {
                       {item.description && typeof item.description === 'object' && (
                         <TipTapRenderer
                           content={item.description as Record<string, unknown>}
-                          className='prose-sm text-primary'
+                          className='prose-sm'
                         />
                       )}
                       {item.techStack?.length > 0 && (
