@@ -1,6 +1,6 @@
 import dns from 'node:dns';
 import dnsPromises from 'node:dns/promises';
-import type mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 try {
   dns.setServers(['8.8.8.8', '1.1.1.1']);
