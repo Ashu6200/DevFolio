@@ -1,11 +1,8 @@
 import { z } from 'zod';
-import { publicProcedure, protectedProcedure, router } from '../trpc';
-import {
-  createProjectSchema,
-  updateProjectSchema,
-} from '@/server/schemas/project.schema';
-import { Project } from '@/server/models';
 import { connectToDatabase } from '@/server/db/mongoose';
+import { Project } from '@/server/models';
+import { createProjectSchema, updateProjectSchema } from '@/server/schemas/project.schema';
+import { protectedProcedure, publicProcedure, router } from '../trpc';
 
 export const projectRouter = router({
   list: publicProcedure.query(async () => {
@@ -23,26 +20,20 @@ export const projectRouter = router({
     return Project.find({ featured: true }).sort({ order: 1 }).lean();
   }),
 
-  create: protectedProcedure
-    .input(createProjectSchema)
-    .mutation(async ({ input, ctx }) => {
-      await connectToDatabase();
-      return Project.create({ ...input, userId: ctx.userId });
-    }),
+  create: protectedProcedure.input(createProjectSchema).mutation(async ({ input, ctx }) => {
+    await connectToDatabase();
+    return Project.create({ ...input, userId: ctx.userId });
+  }),
 
-  update: protectedProcedure
-    .input(updateProjectSchema)
-    .mutation(async ({ input, ctx }) => {
-      await connectToDatabase();
-      const { id, ...data } = input;
-      const doc = await Project.findOneAndUpdate(
-        { _id: id, userId: ctx.userId },
-        data,
-        { new: true }
-      );
-      if (!doc) throw new Error('Project not found');
-      return doc;
-    }),
+  update: protectedProcedure.input(updateProjectSchema).mutation(async ({ input, ctx }) => {
+    await connectToDatabase();
+    const { id, ...data } = input;
+    const doc = await Project.findOneAndUpdate({ _id: id, userId: ctx.userId }, data, {
+      new: true,
+    });
+    if (!doc) throw new Error('Project not found');
+    return doc;
+  }),
 
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))

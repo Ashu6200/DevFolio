@@ -50,5 +50,11 @@ export const contactFormSchema = z.object({
   email: z.string().email('Invalid email'),
   subject: z.string().min(1, 'Required').max(200),
   message: z.string().min(1, 'Required').max(5000),
+  consent: z
+    .boolean()
+    .refine(
+      (val) => val === true,
+      'You must consent to the processing of your personal data under the DPDP Act, 2023.'
+    ),
 });
 export type ContactFormValues = z.infer<typeof contactFormSchema>;

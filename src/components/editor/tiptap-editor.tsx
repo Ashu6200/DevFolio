@@ -1,14 +1,13 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { useEditor, EditorContent, EditorContext, type Editor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import LinkExtension from '@tiptap/extension-link';
-import ImageExtension from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import ImageExtension from '@tiptap/extension-image';
+import LinkExtension from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
+import { type Editor, EditorContent, EditorContext, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import { common, createLowlight } from 'lowlight';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import EditorToolbar from './editor-toolbar';
 import { uploadEditorImages } from './upload-editor-images';
 
@@ -26,11 +25,7 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
     try {
       const images = await uploadEditorImages(files);
       images.forEach((image) => {
-        editorRef.current
-          ?.chain()
-          .focus()
-          .setImage({ src: image.url, alt: image.name })
-          .run();
+        editorRef.current?.chain().focus().setImage({ src: image.url, alt: image.name }).run();
       });
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Image upload failed.');
@@ -62,8 +57,8 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
           '[&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:my-1',
       },
       handlePaste: (_view, event) => {
-        const files = Array.from(event.clipboardData?.files ?? []).filter(
-          (file) => file.type.startsWith('image/')
+        const files = Array.from(event.clipboardData?.files ?? []).filter((file) =>
+          file.type.startsWith('image/')
         );
         if (!files.length) return false;
         event.preventDefault();
@@ -71,8 +66,8 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
         return true;
       },
       handleDrop: (_view, event) => {
-        const files = Array.from(event.dataTransfer?.files ?? []).filter(
-          (file) => file.type.startsWith('image/')
+        const files = Array.from(event.dataTransfer?.files ?? []).filter((file) =>
+          file.type.startsWith('image/')
         );
         if (!files.length) return false;
         event.preventDefault();
@@ -92,7 +87,7 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
   return (
     // ✅ Provide editor via context — toolbar reads it with useCurrentEditor
     <EditorContext.Provider value={contextValue}>
-      <div className='border rounded-lg overflow-hidden bg-background'>
+      <div className="border rounded-lg overflow-hidden bg-background">
         <EditorToolbar />
         <EditorContent editor={editor} />
       </div>

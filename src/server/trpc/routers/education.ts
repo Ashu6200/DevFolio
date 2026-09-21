@@ -1,11 +1,8 @@
 import { z } from 'zod';
-import { publicProcedure, protectedProcedure, router } from '../trpc';
-import {
-  createEducationSchema,
-  updateEducationSchema,
-} from '@/server/schemas/education.schema';
-import { Education } from '@/server/models';
 import { connectToDatabase } from '@/server/db/mongoose';
+import { Education } from '@/server/models';
+import { createEducationSchema, updateEducationSchema } from '@/server/schemas/education.schema';
+import { protectedProcedure, publicProcedure, router } from '../trpc';
 
 export const educationRouter = router({
   list: publicProcedure.query(async () => {
@@ -18,26 +15,20 @@ export const educationRouter = router({
     return Education.findById(input.id).lean();
   }),
 
-  create: protectedProcedure
-    .input(createEducationSchema)
-    .mutation(async ({ input, ctx }) => {
-      await connectToDatabase();
-      return Education.create({ ...input, userId: ctx.userId });
-    }),
+  create: protectedProcedure.input(createEducationSchema).mutation(async ({ input, ctx }) => {
+    await connectToDatabase();
+    return Education.create({ ...input, userId: ctx.userId });
+  }),
 
-  update: protectedProcedure
-    .input(updateEducationSchema)
-    .mutation(async ({ input, ctx }) => {
-      await connectToDatabase();
-      const { id, ...data } = input;
-      const doc = await Education.findOneAndUpdate(
-        { _id: id, userId: ctx.userId },
-        data,
-        { new: true }
-      );
-      if (!doc) throw new Error('Education entry not found');
-      return doc;
-    }),
+  update: protectedProcedure.input(updateEducationSchema).mutation(async ({ input, ctx }) => {
+    await connectToDatabase();
+    const { id, ...data } = input;
+    const doc = await Education.findOneAndUpdate({ _id: id, userId: ctx.userId }, data, {
+      new: true,
+    });
+    if (!doc) throw new Error('Education entry not found');
+    return doc;
+  }),
 
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))

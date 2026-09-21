@@ -1,10 +1,11 @@
 'use client';
 
-import { trpc } from '@/utils/trpc';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
-import React, { useState, useEffect, useRef } from 'react';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import superjson from 'superjson';
+import { trpc } from '@/utils/trpc';
 
 const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const fingerprintRef = useRef<string | null>(null);

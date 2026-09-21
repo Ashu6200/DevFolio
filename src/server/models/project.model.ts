@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { type Document, Schema } from 'mongoose';
 
 export interface IProject extends Document {
   userId: string;
@@ -30,5 +30,4 @@ const ProjectSchema = new Schema<IProject>(
 );
 
 export const Project =
-  mongoose.models.Project ||
-  mongoose.model<IProject>('Project', ProjectSchema);
+  mongoose.models.Project || mongoose.model<IProject>('Project', ProjectSchema);

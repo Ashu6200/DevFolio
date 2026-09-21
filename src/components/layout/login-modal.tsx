@@ -1,11 +1,10 @@
 'use client';
 
-import { authClient } from '@/lib/auth-client';
-import { getFingerprintHash } from '@/lib/fingerprint';
-import { loginFormSchema, type LoginFormValues } from '@/lib/schemas/form-schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Dialog,
   DialogContent,
@@ -13,10 +12,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { authClient } from '@/lib/auth-client';
+import { getFingerprintHash } from '@/lib/fingerprint';
+import { type LoginFormValues, loginFormSchema } from '@/lib/schemas/form-schemas';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -64,49 +64,45 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className='sm:max-w-md'>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className='text-2xl font-bold text-center'>
-            Welcome Back
-          </DialogTitle>
-          <DialogDescription className='text-center'>
+          <DialogTitle className="text-2xl font-bold text-center">Welcome Back</DialogTitle>
+          <DialogDescription className="text-center">
             Sign in to your portfolio dashboard
           </DialogDescription>
         </DialogHeader>
 
         {errors.root && (
-          <div className='rounded-md bg-destructive/10 p-3 text-sm text-destructive'>
+          <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
             {errors.root.message}
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-          <div className='space-y-2'>
-            <Label htmlFor='modal-email'>Email</Label>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="modal-email">Email</Label>
             <Input
-              id='modal-email'
-              type='email'
-              placeholder='you@example.com'
+              id="modal-email"
+              type="email"
+              placeholder="you@example.com"
               {...register('email')}
             />
-            {errors.email && (
-              <p className='text-xs text-destructive'>{errors.email.message}</p>
-            )}
+            {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
           </div>
-          <div className='space-y-2'>
-            <Label htmlFor='modal-password'>Password</Label>
+          <div className="space-y-2">
+            <Label htmlFor="modal-password">Password</Label>
             <Input
-              id='modal-password'
-              type='password'
-              placeholder='Enter your password'
+              id="modal-password"
+              type="password"
+              placeholder="Enter your password"
               {...register('password')}
             />
             {errors.password && (
-              <p className='text-xs text-destructive'>{errors.password.message}</p>
+              <p className="text-xs text-destructive">{errors.password.message}</p>
             )}
           </div>
-          <Button type='submit' className='w-full' disabled={isSubmitting}>
-            {isSubmitting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Sign In
           </Button>
         </form>

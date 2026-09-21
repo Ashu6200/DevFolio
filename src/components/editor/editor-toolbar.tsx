@@ -1,28 +1,41 @@
 'use client';
 
-import { useRef, useState, type ChangeEvent } from 'react';
 import { useCurrentEditor, useEditorState } from '@tiptap/react';
+import {
+  Bold,
+  Code,
+  CodeSquare,
+  Heading1,
+  Heading2,
+  Heading3,
+  Image,
+  ImagePlus,
+  Italic,
+  Link,
+  List,
+  ListOrdered,
+  Loader2,
+  type LucideIcon,
+  Quote,
+  Redo,
+  Strikethrough,
+  Undo,
+} from 'lucide-react';
+import { type ChangeEvent, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { uploadEditorImages } from './upload-editor-images';
-import {
-  Bold, Italic, Strikethrough, Code,
-  Heading1, Heading2, Heading3,
-  List, ListOrdered, Quote, CodeSquare,
-  Link, Image, ImagePlus, Loader2, Undo, Redo,
-  type LucideIcon,
-} from 'lucide-react';
 
 type ToolbarItem =
   | { separator: true }
   | {
-    icon: LucideIcon;
-    action: () => void;
-    active: boolean;
-    tooltip: string;
-    disabled?: boolean;
-    iconClassName?: string;
-  };
+      icon: LucideIcon;
+      action: () => void;
+      active: boolean;
+      tooltip: string;
+      disabled?: boolean;
+      iconClassName?: string;
+    };
 
 // ✅ No props needed — editor comes from context
 export default function EditorToolbar() {
@@ -95,19 +108,74 @@ export default function EditorToolbar() {
   }
 
   const items: ToolbarItem[] = [
-    { icon: Bold, action: () => editor.chain().focus().toggleBold().run(), active: editorState?.isBold ?? false, tooltip: 'Bold' },
-    { icon: Italic, action: () => editor.chain().focus().toggleItalic().run(), active: editorState?.isItalic ?? false, tooltip: 'Italic' },
-    { icon: Strikethrough, action: () => editor.chain().focus().toggleStrike().run(), active: editorState?.isStrike ?? false, tooltip: 'Strikethrough' },
-    { icon: Code, action: () => editor.chain().focus().toggleCode().run(), active: editorState?.isCode ?? false, tooltip: 'Inline Code' },
+    {
+      icon: Bold,
+      action: () => editor.chain().focus().toggleBold().run(),
+      active: editorState?.isBold ?? false,
+      tooltip: 'Bold',
+    },
+    {
+      icon: Italic,
+      action: () => editor.chain().focus().toggleItalic().run(),
+      active: editorState?.isItalic ?? false,
+      tooltip: 'Italic',
+    },
+    {
+      icon: Strikethrough,
+      action: () => editor.chain().focus().toggleStrike().run(),
+      active: editorState?.isStrike ?? false,
+      tooltip: 'Strikethrough',
+    },
+    {
+      icon: Code,
+      action: () => editor.chain().focus().toggleCode().run(),
+      active: editorState?.isCode ?? false,
+      tooltip: 'Inline Code',
+    },
     { separator: true },
-    { icon: Heading1, action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(), active: editorState?.isH1 ?? false, tooltip: 'Heading 1' },
-    { icon: Heading2, action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(), active: editorState?.isH2 ?? false, tooltip: 'Heading 2' },
-    { icon: Heading3, action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(), active: editorState?.isH3 ?? false, tooltip: 'Heading 3' },
+    {
+      icon: Heading1,
+      action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+      active: editorState?.isH1 ?? false,
+      tooltip: 'Heading 1',
+    },
+    {
+      icon: Heading2,
+      action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+      active: editorState?.isH2 ?? false,
+      tooltip: 'Heading 2',
+    },
+    {
+      icon: Heading3,
+      action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+      active: editorState?.isH3 ?? false,
+      tooltip: 'Heading 3',
+    },
     { separator: true },
-    { icon: List, action: () => editor.chain().focus().toggleBulletList().run(), active: editorState?.isBulletList ?? false, tooltip: 'Bullet List' },
-    { icon: ListOrdered, action: () => editor.chain().focus().toggleOrderedList().run(), active: editorState?.isOrderedList ?? false, tooltip: 'Ordered List' },
-    { icon: Quote, action: () => editor.chain().focus().toggleBlockquote().run(), active: editorState?.isBlockquote ?? false, tooltip: 'Blockquote' },
-    { icon: CodeSquare, action: () => editor.chain().focus().toggleCodeBlock().run(), active: editorState?.isCodeBlock ?? false, tooltip: 'Code Block' },
+    {
+      icon: List,
+      action: () => editor.chain().focus().toggleBulletList().run(),
+      active: editorState?.isBulletList ?? false,
+      tooltip: 'Bullet List',
+    },
+    {
+      icon: ListOrdered,
+      action: () => editor.chain().focus().toggleOrderedList().run(),
+      active: editorState?.isOrderedList ?? false,
+      tooltip: 'Ordered List',
+    },
+    {
+      icon: Quote,
+      action: () => editor.chain().focus().toggleBlockquote().run(),
+      active: editorState?.isBlockquote ?? false,
+      tooltip: 'Blockquote',
+    },
+    {
+      icon: CodeSquare,
+      action: () => editor.chain().focus().toggleCodeBlock().run(),
+      active: editorState?.isCodeBlock ?? false,
+      tooltip: 'Code Block',
+    },
     { separator: true },
     { icon: Link, action: addLink, active: editorState?.isLink ?? false, tooltip: 'Link' },
     { icon: Image, action: addImageUrl, active: false, tooltip: 'Image URL' },
@@ -120,23 +188,33 @@ export default function EditorToolbar() {
       iconClassName: isUploadingImage ? 'animate-spin' : undefined,
     },
     { separator: true },
-    { icon: Undo, action: () => editor.chain().focus().undo().run(), active: false, tooltip: 'Undo' },
-    { icon: Redo, action: () => editor.chain().focus().redo().run(), active: false, tooltip: 'Redo' },
+    {
+      icon: Undo,
+      action: () => editor.chain().focus().undo().run(),
+      active: false,
+      tooltip: 'Undo',
+    },
+    {
+      icon: Redo,
+      action: () => editor.chain().focus().redo().run(),
+      active: false,
+      tooltip: 'Redo',
+    },
   ];
 
   return (
-    <div className='flex flex-wrap items-center gap-0.5 border-b px-2 py-1.5 bg-muted/50'>
+    <div className="flex flex-wrap items-center gap-0.5 border-b px-2 py-1.5 bg-muted/50">
       {items.map((item, index) => {
         if ('separator' in item) {
-          return <Separator key={index} orientation='vertical' className='mx-1 h-6' />;
+          return <Separator key={index} orientation="vertical" className="mx-1 h-6" />;
         }
         const Icon = item.icon;
         return (
           <Button
             key={index}
-            variant='ghost'
-            size='sm'
-            type='button'
+            variant="ghost"
+            size="sm"
+            type="button"
             className={`h-8 w-8 p-0 ${item.active ? 'bg-accent' : ''}`}
             // ✅ onMouseDown fires before the editor loses focus.
             // preventDefault keeps focus in the editor, then action runs — all in one event.
@@ -153,10 +231,10 @@ export default function EditorToolbar() {
       })}
       <input
         ref={fileInputRef}
-        type='file'
-        accept='image/*'
+        type="file"
+        accept="image/*"
         multiple
-        className='hidden'
+        className="hidden"
         onChange={handleImageChange}
       />
     </div>

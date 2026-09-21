@@ -1,18 +1,18 @@
 'use client';
 
-import { trpc } from '@/utils/trpc';
-import { workFormSchema, type WorkFormValues } from '@/lib/schemas/form-schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
+import { Loader2, Paperclip, Upload, X } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
+import TipTapEditor from '@/components/editor/tiptap-editor';
 import { Button } from '@/components/ui/button';
+import { DateRangePicker } from '@/components/ui/date-range-picker';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import TipTapEditor from '@/components/editor/tiptap-editor';
-import { useForm, Controller, useWatch } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRef, useState } from 'react';
-import { Loader2, Paperclip, Upload, X } from 'lucide-react';
-import { format } from 'date-fns';
-import { DateRangePicker } from '@/components/ui/date-range-picker';
+import { type WorkFormValues, workFormSchema } from '@/lib/schemas/form-schemas';
+import { trpc } from '@/utils/trpc';
 
 interface WorkFormProps {
   initialData?: {
@@ -31,11 +31,7 @@ interface WorkFormProps {
   onCancel: () => void;
 }
 
-export default function WorkForm({
-  initialData,
-  onSuccess,
-  onCancel,
-}: WorkFormProps) {
+export default function WorkForm({ initialData, onSuccess, onCancel }: WorkFormProps) {
   const utils = trpc.useUtils();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
@@ -58,9 +54,7 @@ export default function WorkForm({
       startDate: initialData?.startDate
         ? format(new Date(initialData.startDate), 'yyyy-MM-dd')
         : '',
-      endDate: initialData?.endDate
-        ? format(new Date(initialData.endDate), 'yyyy-MM-dd')
-        : '',
+      endDate: initialData?.endDate ? format(new Date(initialData.endDate), 'yyyy-MM-dd') : '',
       current: initialData?.current ?? false,
       description: initialData?.description ?? { type: 'doc', content: [{ type: 'paragraph' }] },
       attachments: initialData?.attachments ?? [],
@@ -74,10 +68,16 @@ export default function WorkForm({
   });
 
   const createMutation = trpc.work.create.useMutation({
-    onSuccess: () => { utils.work.list.invalidate(); onSuccess(); },
+    onSuccess: () => {
+      utils.work.list.invalidate();
+      onSuccess();
+    },
   });
   const updateMutation = trpc.work.update.useMutation({
-    onSuccess: () => { utils.work.list.invalidate(); onSuccess(); },
+    onSuccess: () => {
+      utils.work.list.invalidate();
+      onSuccess();
+    },
   });
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -106,7 +106,10 @@ export default function WorkForm({
   }
 
   function onSubmit(values: WorkFormValues) {
-    const techStack = values.techStack.split(',').map((s) => s.trim()).filter(Boolean);
+    const techStack = values.techStack
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
     const payload = {
       company: values.company,
       role: values.role,
@@ -114,15 +117,16 @@ export default function WorkForm({
       startDate: new Date(values.startDate).toISOString(),
       endDate: values.current
         ? undefined
-        : values.endDate ? new Date(values.endDate).toISOString() : undefined,
+        : values.endDate
+          ? new Date(values.endDate).toISOString()
+          : undefined,
       current: values.current,
       description: values.description as { type: 'doc'; content: Record<string, unknown>[] },
       attachments: values.attachments,
       order: values.order,
     };
 
-    const onError = (e: { message: string }) =>
-      setError('root', { message: e.message });
+    const onError = (e: { message: string }) => setError('root', { message: e.message });
 
     if (initialData?._id) {
       updateMutation.mutate({ id: initialData._id, ...payload }, { onError });
@@ -132,85 +136,102 @@ export default function WorkForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {errors.root && (
-        <div className='rounded-md bg-destructive/10 p-3 text-sm text-destructive'>
+        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
           {errors.root.message}
         </div>
       )}
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <div className='space-y-2'>
-          <Label htmlFor='company'>Company</Label>
-          <Input id='company' {...register('company')} />
-          {errors.company && <p className='text-xs text-destructive'>{errors.company.message}</p>}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="company">Company</Label>
+          <Input id="company" {...register('company')} />
+          {errors.company && <p className="text-xs text-destructive">{errors.company.message}</p>}
         </div>
-        <div className='space-y-2'>
-          <Label htmlFor='role'>Role</Label>
-          <Input id='role' {...register('role')} />
-          {errors.role && <p className='text-xs text-destructive'>{errors.role.message}</p>}
+        <div className="space-y-2">
+          <Label htmlFor="role">Role</Label>
+          <Input id="role" {...register('role')} />
+          {errors.role && <p className="text-xs text-destructive">{errors.role.message}</p>}
         </div>
       </div>
 
-      <div className='space-y-2'>
-        <Label htmlFor='techStack'>Tech Stack (comma-separated)</Label>
-        <Input id='techStack' placeholder='e.g. React, Node.js, TypeScript' {...register('techStack')} />
+      <div className="space-y-2">
+        <Label htmlFor="techStack">Tech Stack (comma-separated)</Label>
+        <Input
+          id="techStack"
+          placeholder="e.g. React, Node.js, TypeScript"
+          {...register('techStack')}
+        />
       </div>
 
-      <div className='space-y-2'>
+      <div className="space-y-2">
         <Label>Date Range</Label>
         <DateRangePicker
           from={startDateVal ? new Date(startDateVal) : undefined}
           to={!isCurrent && endDateVal ? new Date(endDateVal) : undefined}
           toDisabled={isCurrent}
           onSelect={(range) => {
-            setValue('startDate', range?.from ? format(range.from, 'yyyy-MM-dd') : '', { shouldValidate: true });
-            setValue('endDate', range?.to ? format(range.to, 'yyyy-MM-dd') : '', { shouldValidate: true });
+            setValue('startDate', range?.from ? format(range.from, 'yyyy-MM-dd') : '', {
+              shouldValidate: true,
+            });
+            setValue('endDate', range?.to ? format(range.to, 'yyyy-MM-dd') : '', {
+              shouldValidate: true,
+            });
           }}
         />
-        {errors.startDate && <p className='text-xs text-destructive'>{errors.startDate.message}</p>}
+        {errors.startDate && <p className="text-xs text-destructive">{errors.startDate.message}</p>}
       </div>
 
-      <div className='flex items-center gap-2'>
+      <div className="flex items-center gap-2">
         <Controller
-          name='current'
+          name="current"
           control={control}
           render={({ field }) => (
-            <Switch id='current' checked={field.value} onCheckedChange={field.onChange} />
+            <Switch id="current" checked={field.value} onCheckedChange={field.onChange} />
           )}
         />
-        <Label htmlFor='current'>Currently working here</Label>
+        <Label htmlFor="current">Currently working here</Label>
       </div>
 
-      <div className='space-y-2'>
+      <div className="space-y-2">
         <Label>Description</Label>
         <Controller
-          name='description'
+          name="description"
           control={control}
-          render={({ field }) => (
-            <TipTapEditor content={field.value} onChange={field.onChange} />
-          )}
+          render={({ field }) => <TipTapEditor content={field.value} onChange={field.onChange} />}
         />
       </div>
 
-      <div className='space-y-2'>
+      <div className="space-y-2">
         <Label>Attachments</Label>
 
         {attachments.length > 0 && (
-          <ul className='space-y-1'>
+          <ul className="space-y-1">
             {attachments.map((url: string) => {
               const name = decodeURIComponent(url.split('/').pop() ?? url);
               return (
-                <li key={url} className='flex items-center gap-2 text-sm'>
-                  <Paperclip className='h-3 w-3 shrink-0 text-muted-foreground' />
-                  <a href={url} target='_blank' rel='noopener noreferrer'
-                    className='text-primary underline truncate max-w-xs'>
+                <li key={url} className="flex items-center gap-2 text-sm">
+                  <Paperclip className="h-3 w-3 shrink-0 text-muted-foreground" />
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline truncate max-w-xs"
+                  >
                     {name}
                   </a>
-                  <button type='button'
-                    onClick={() => setValue('attachments', attachments.filter((u: string) => u !== url))}
-                    className='ml-auto text-muted-foreground hover:text-destructive'>
-                    <X className='h-3 w-3' />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setValue(
+                        'attachments',
+                        attachments.filter((u: string) => u !== url)
+                      )
+                    }
+                    className="ml-auto text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
                   </button>
                 </li>
               );
@@ -219,47 +240,72 @@ export default function WorkForm({
         )}
 
         {pendingFiles.length > 0 && (
-          <ul className='space-y-1'>
+          <ul className="space-y-1">
             {pendingFiles.map((file, i) => (
-              <li key={i} className='flex items-center gap-2 text-sm text-muted-foreground'>
-                <Paperclip className='h-3 w-3 shrink-0' />
-                <span className='truncate max-w-xs'>{file.name}</span>
-                <button type='button'
+              <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Paperclip className="h-3 w-3 shrink-0" />
+                <span className="truncate max-w-xs">{file.name}</span>
+                <button
+                  type="button"
                   onClick={() => setPendingFiles((prev) => prev.filter((_, j) => j !== i))}
-                  className='ml-auto hover:text-destructive'>
-                  <X className='h-3 w-3' />
+                  className="ml-auto hover:text-destructive"
+                >
+                  <X className="h-3 w-3" />
                 </button>
               </li>
             ))}
           </ul>
         )}
 
-        {uploadError && <p className='text-sm text-destructive'>{uploadError}</p>}
+        {uploadError && <p className="text-sm text-destructive">{uploadError}</p>}
 
-        <div className='flex gap-2'>
-          <Button type='button' variant='outline' size='sm' onClick={() => fileInputRef.current?.click()}>
-            <Paperclip className='mr-2 h-3 w-3' />
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Paperclip className="mr-2 h-3 w-3" />
             Select Files
           </Button>
           {pendingFiles.length > 0 && (
-            <Button type='button' variant='outline' size='sm' onClick={handleUpload} disabled={uploading}>
-              {uploading ? <Loader2 className='mr-2 h-3 w-3 animate-spin' /> : <Upload className='mr-2 h-3 w-3' />}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleUpload}
+              disabled={uploading}
+            >
+              {uploading ? (
+                <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+              ) : (
+                <Upload className="mr-2 h-3 w-3" />
+              )}
               Upload {pendingFiles.length} file{pendingFiles.length > 1 ? 's' : ''}
             </Button>
           )}
         </div>
-        <input ref={fileInputRef} type='file' multiple className='hidden' onChange={handleFileChange} />
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          className="hidden"
+          onChange={handleFileChange}
+        />
       </div>
 
-      <div className='space-y-2'>
-        <Label htmlFor='order'>Display Order</Label>
-        <Input id='order' type='number' min={0} {...register('order', { valueAsNumber: true })} />
+      <div className="space-y-2">
+        <Label htmlFor="order">Display Order</Label>
+        <Input id="order" type="number" min={0} {...register('order', { valueAsNumber: true })} />
       </div>
 
-      <div className='flex gap-2 justify-end'>
-        <Button type='button' variant='outline' onClick={onCancel}>Cancel</Button>
-        <Button type='submit' disabled={isSubmitting || uploading}>
-          {isSubmitting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+      <div className="flex gap-2 justify-end">
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button type="submit" disabled={isSubmitting || uploading}>
+          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {initialData ? 'Update' : 'Create'}
         </Button>
       </div>

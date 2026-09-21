@@ -1,12 +1,10 @@
 import { z } from 'zod';
-import { router, protectedProcedure, publicProcedure } from '../trpc';
 import { Resume } from '@/server/models';
+import { protectedProcedure, publicProcedure, router } from '../trpc';
 
 export const resumeRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
-    return await Resume.find({ userId: ctx.userId })
-      .sort({ createdAt: -1 })
-      .lean();
+    return await Resume.find({ userId: ctx.userId }).sort({ createdAt: -1 }).lean();
   }),
 
   create: protectedProcedure
@@ -37,7 +35,7 @@ export const resumeRouter = router({
       return await Resume.findOneAndUpdate(
         { _id: input.id, userId: ctx.userId },
         { isActive: true },
-        { new: true },
+        { new: true }
       );
     }),
 

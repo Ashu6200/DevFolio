@@ -1,7 +1,7 @@
-import { getAuth } from '@/utils/auth';
+import { v2 as cloudinary } from 'cloudinary';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { v2 as cloudinary } from 'cloudinary';
+import { getAuth } from '@/utils/auth';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

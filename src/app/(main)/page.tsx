@@ -1,15 +1,19 @@
+import AboutSection from '@/components/layout/about';
+import ContactCTA from '@/components/layout/contact-cta';
+import FeaturedProjects from '@/components/layout/featured-projects';
 import Features from '@/components/layout/features';
-import Hero from '@/components/layout/hero';
 import Skills from '@/components/layout/skills';
 
-const page = () => {
+const HomePage = () => {
   return (
-    <main className='h-full w-full'>
-      <Hero />
+    <main className="h-full w-full">
+      <AboutSection />
       <Skills />
+      <FeaturedProjects />
       <Features />
+      <ContactCTA />
     </main>
   );
 };
 
-export default page;
+export default HomePage;

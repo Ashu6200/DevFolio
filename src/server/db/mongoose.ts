@@ -1,4 +1,15 @@
-import mongoose from 'mongoose';
+import dns from 'node:dns';
+import dnsPromises from 'node:dns/promises';
+import type mongoose from 'mongoose';
+
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+  if (dnsPromises && typeof dnsPromises.setServers === 'function') {
+    dnsPromises.setServers(['8.8.8.8', '1.1.1.1']);
+  }
+} catch {
+  // Ignore in environments where setting DNS servers is not allowed
+}
 
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -22,9 +33,16 @@ export async function connectToDatabase() {
 
   const MONGODB_URI = process.env.DATABASE_URL;
   if (!MONGODB_URI) {
-    throw new Error(
-      'Please define the DATABASE_URL environment variable inside .env.local',
-    );
+    throw new Error('Please define the DATABASE_URL environment variable inside .env.local');
+  }
+
+  try {
+    dns.setServers(['8.8.8.8', '1.1.1.1']);
+    if (dnsPromises && typeof dnsPromises.setServers === 'function') {
+      dnsPromises.setServers(['8.8.8.8', '1.1.1.1']);
+    }
+  } catch {
+    // Ignore in environments where setting DNS servers is not allowed
   }
 
   if (!cached!.promise) {

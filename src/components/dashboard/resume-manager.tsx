@@ -1,18 +1,18 @@
 'use client';
 
+import { CheckCircle2, Circle, FileIcon, Loader2, Trash2, Upload } from 'lucide-react';
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Loader2, Upload, FileIcon, Trash2, CheckCircle2, Circle } from 'lucide-react';
 import { toast } from 'sonner';
-import { trpc } from '@/utils/trpc';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { trpc } from '@/utils/trpc';
 
 export default function ResumeManager() {
   const [isUploading, setIsUploading] = useState(false);
   const utils = trpc.useUtils();
-  
+
   const { data: resumes, isLoading } = trpc.resume.list.useQuery();
   const createMutation = trpc.resume.create.useMutation({
     onSuccess: () => utils.resume.list.invalidate(),
@@ -26,14 +26,14 @@ export default function ResumeManager() {
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
-    
+
     const file = e.target.files[0];
     const formData = new FormData();
     formData.append('files', file);
 
     try {
       setIsUploading(true);
-      
+
       const res = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
@@ -65,7 +65,7 @@ export default function ResumeManager() {
     try {
       await deleteMutation.mutateAsync({ id });
       toast.success('Resume deleted successfully!');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to delete resume');
     }
   };
@@ -74,7 +74,7 @@ export default function ResumeManager() {
     try {
       await setActiveMutation.mutateAsync({ id });
       toast.success('Resume set as active!');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to set active resume');
     }
   };
@@ -95,9 +95,12 @@ export default function ResumeManager() {
             {resumes?.map((resume) => {
               const id = (resume as unknown as Record<string, unknown>)._id as string;
               return (
-                <div key={id} className={`flex items-center justify-between p-4 border rounded-lg transition-colors ${resume.isActive ? 'bg-primary/5 border-primary/20' : 'bg-card'}`}>
+                <div
+                  key={id}
+                  className={`flex items-center justify-between p-4 border rounded-lg transition-colors ${resume.isActive ? 'bg-primary/5 border-primary/20' : 'bg-card'}`}
+                >
                   <div className="flex items-center gap-3">
-                    <button 
+                    <button
                       onClick={() => !resume.isActive && handleSetActive(id)}
                       disabled={resume.isActive || setActiveMutation.isPending}
                       className="shrink-0 p-1 rounded-full hover:bg-muted transition-colors cursor-pointer disabled:cursor-default"
@@ -114,17 +117,26 @@ export default function ResumeManager() {
                     <div>
                       <div className="flex items-center gap-2">
                         <p className="font-medium text-sm line-clamp-1">{resume.name}</p>
-                        {resume.isActive && <Badge variant="secondary" className="text-[10px] h-4 px-1">Active</Badge>}
+                        {resume.isActive && (
+                          <Badge variant="secondary" className="text-[10px] h-4 px-1">
+                            Active
+                          </Badge>
+                        )}
                       </div>
-                      <a href={resume.url} target="_blank" rel="noreferrer" className="text-xs text-muted-foreground hover:underline">
+                      <a
+                        href={resume.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs text-muted-foreground hover:underline"
+                      >
                         View File
                       </a>
                     </div>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => handleDelete(id)} 
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDelete(id)}
                     disabled={deleteMutation.isPending}
                     className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                   >
@@ -133,7 +145,7 @@ export default function ResumeManager() {
                 </div>
               );
             })}
-            
+
             {resumes?.length === 0 && (
               <div className="text-center p-4 text-sm text-muted-foreground">
                 No resumes uploaded yet.
@@ -151,15 +163,21 @@ export default function ResumeManager() {
           <div className="mt-2">
             <Button asChild disabled={isUploading || createMutation.isPending}>
               <label className="cursor-pointer">
-                {(isUploading || createMutation.isPending) ? (
+                {isUploading || createMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Uploading...
                   </>
                 ) : (
-                  "Select File"
+                  'Select File'
                 )}
-                <Input type="file" className="hidden" accept=".pdf,.doc,.docx,image/*" onChange={handleFileUpload} disabled={isUploading || createMutation.isPending} />
+                <Input
+                  type="file"
+                  className="hidden"
+                  accept=".pdf,.doc,.docx,image/*"
+                  onChange={handleFileUpload}
+                  disabled={isUploading || createMutation.isPending}
+                />
               </label>
             </Button>
           </div>

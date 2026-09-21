@@ -1,5 +1,5 @@
-import { protectedProcedure, router, publicProcedure } from '../trpc';
 import mongoose from 'mongoose';
+import { protectedProcedure, publicProcedure, router } from '../trpc';
 
 export const userRouter = router({
   me: protectedProcedure.query(async ({ ctx }) => {

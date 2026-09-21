@@ -1,17 +1,5 @@
-/**
- * Admin seeder script — run once to create the admin user.
- *
- * Usage:
- *   npx tsx scripts/seed-admin.ts
- *
- * Required env vars (set in .env.local):
- *   ADMIN_NAME=Your Name
- *   ADMIN_EMAIL=admin@example.com
- *   ADMIN_PASSWORD=your-strong-password
- */
-
+import { resolve } from 'node:path';
 import { config } from 'dotenv';
-import { resolve } from 'path';
 
 config({ path: resolve(process.cwd(), '.env.local') });
 
@@ -23,9 +11,7 @@ async function main() {
   const password = process.env.ADMIN_PASSWORD;
 
   if (!name || !email || !password) {
-    console.error(
-      'Missing required env vars: ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD'
-    );
+    console.error('Missing required env vars: ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD');
     process.exit(1);
   }
 

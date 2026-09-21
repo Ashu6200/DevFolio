@@ -1,14 +1,13 @@
 'use client';
 
-import * as React from 'react';
 import { format } from 'date-fns';
-import type { DateRange } from 'react-day-picker';
 import { CalendarIcon } from 'lucide-react';
-
-import { cn } from '@/lib/utils';
+import * as React from 'react';
+import type { DateRange } from 'react-day-picker';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 interface DateRangePickerProps {
   from?: Date;
@@ -50,8 +49,8 @@ export function DateRangePicker({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          type='button'
-          variant='outline'
+          type="button"
+          variant="outline"
           disabled={disabled}
           className={cn(
             'w-full justify-start text-left font-normal',
@@ -59,17 +58,17 @@ export function DateRangePicker({
             className
           )}
         >
-          <CalendarIcon className='mr-2 h-4 w-4 shrink-0' />
+          <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
           {formatLabel()}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-auto p-0' align='start'>
+      <PopoverContent className="w-auto p-0" align="start">
         <Calendar
-          mode='range'
+          mode="range"
           selected={{ from, to: toDisabled ? undefined : to }}
           onSelect={handleSelect}
           numberOfMonths={1}
-          captionLayout='dropdown'
+          captionLayout="dropdown"
           fromYear={1950}
           toYear={new Date().getFullYear() + 5}
         />

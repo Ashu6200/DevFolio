@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 const ACTIVATION_PATH = process.env.ACTIVATION_PATH || '/activate';
 const ACTIVATION_KEY = process.env.ACTIVATION_KEY;
@@ -8,10 +8,7 @@ const PUBLIC_PATHS = ['/', '/about', '/projects', '/contact', '/blogs'];
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/images')
-  ) {
+  if (pathname.startsWith('/_next') || pathname.startsWith('/images')) {
     return NextResponse.next();
   }
 

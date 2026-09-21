@@ -26,13 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative overflow-x-hidden`}
+        suppressHydrationWarning
       >
         <GlobalProvider>
-          <ThemeProvider attribute='class' defaultTheme='light' enableSystem>
-            <div className='absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none' />
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+            <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 w-200 h-200 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
             {children}
           </ThemeProvider>
         </GlobalProvider>

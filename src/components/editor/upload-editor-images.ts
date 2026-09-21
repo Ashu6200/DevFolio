@@ -3,9 +3,7 @@ export interface UploadedEditorImage {
   name: string;
 }
 
-export async function uploadEditorImages(
-  files: File[]
-): Promise<UploadedEditorImage[]> {
+export async function uploadEditorImages(files: File[]): Promise<UploadedEditorImage[]> {
   const imageFiles = files.filter((file) => file.type.startsWith('image/'));
 
   if (!imageFiles.length) {

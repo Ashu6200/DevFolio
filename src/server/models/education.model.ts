@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { type Document, Schema } from 'mongoose';
 
 export interface IEducation extends Document {
   userId: string;
@@ -32,5 +32,4 @@ const EducationSchema = new Schema<IEducation>(
 );
 
 export const Education =
-  mongoose.models.Education ||
-  mongoose.model<IEducation>('Education', EducationSchema);
+  mongoose.models.Education || mongoose.model<IEducation>('Education', EducationSchema);

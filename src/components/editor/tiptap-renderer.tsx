@@ -1,10 +1,10 @@
 'use client';
 
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import ImageExtension from '@tiptap/extension-image';
+import LinkExtension from '@tiptap/extension-link';
 import { generateHTML } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import LinkExtension from '@tiptap/extension-link';
-import ImageExtension from '@tiptap/extension-image';
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { common, createLowlight } from 'lowlight';
 import { useMemo } from 'react';
 

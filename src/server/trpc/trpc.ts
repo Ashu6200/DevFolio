@@ -1,8 +1,8 @@
-import { getAuth } from '@/utils/auth';
-import { Context } from './context';
 import { initTRPC, TRPCError } from '@trpc/server';
-import superjson from 'superjson';
 import { headers } from 'next/headers';
+import superjson from 'superjson';
+import { getAuth } from '@/utils/auth';
+import type { Context } from './context';
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -32,14 +32,11 @@ export const protectedProcedure = t.procedure.use(async (opts) => {
 
   // Fingerprint validation
   const requestFingerprint = reqHeaders.get('x-fingerprint-hash');
-  const sessionFingerprint = (session.session as Record<string, unknown>)
-    .fingerprintHash as string | undefined;
+  const sessionFingerprint = (session.session as Record<string, unknown>).fingerprintHash as
+    | string
+    | undefined;
 
-  if (
-    sessionFingerprint &&
-    requestFingerprint &&
-    sessionFingerprint !== requestFingerprint
-  ) {
+  if (sessionFingerprint && requestFingerprint && sessionFingerprint !== requestFingerprint) {
     throw new TRPCError({
       code: 'FORBIDDEN',
       message: 'Device fingerprint mismatch. Please sign in again.',
@@ -47,10 +44,7 @@ export const protectedProcedure = t.procedure.use(async (opts) => {
   }
 
   // IP validation — major subnet change triggers re-auth
-  const currentIp = reqHeaders
-    .get('x-forwarded-for')
-    ?.split(',')[0]
-    ?.trim();
+  const currentIp = reqHeaders.get('x-forwarded-for')?.split(',')[0]?.trim();
   const sessionIp = session.session.ipAddress;
 
   if (currentIp && sessionIp && !isSameSubnet(currentIp, sessionIp)) {
