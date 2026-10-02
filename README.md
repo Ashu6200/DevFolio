@@ -1,36 +1,236 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Full-Stack Developer Portfolio
 
-## Getting Started
+A modern, production-ready developer portfolio built with **Next.js**, **TypeScript**, **tRPC**, **MongoDB**, and **Redis/Upstash**.
 
-First, run the development server:
+This project is more than a static portfolio. It is a full-stack application designed to showcase projects, skills, experience, and other professional information through a scalable and type-safe architecture.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The application uses **Next.js** for the frontend and server-side functionality, **tRPC** for end-to-end type-safe APIs, **MongoDB** for persistent data storage, and **Redis/Upstash** for caching and performance optimization.
+
+---
+
+## ✨ Features
+
+* Modern and responsive portfolio UI
+* Full-stack architecture using Next.js
+* Type-safe API communication with tRPC
+* MongoDB database integration
+* Redis/Upstash caching
+* Server-side rendering and static generation where appropriate
+* Dynamic project management
+* Skills and technology showcase
+* Experience and education sections
+* Contact functionality
+* SEO-friendly metadata
+* Responsive design for mobile, tablet, and desktop
+* Optimized API and database access
+* Environment-based configuration
+* Clean and scalable project structure
+* TypeScript throughout the application
+* Developer-focused architecture
+* Production-ready deployment setup
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* [Next.js](https://nextjs.org/)
+* React
+* TypeScript
+* Tailwind CSS
+* Modern CSS
+* Responsive UI
+
+### Backend
+
+* Next.js Server Components / Server Actions
+* tRPC
+* TypeScript
+* Node.js runtime
+
+### Database
+
+* MongoDB
+* MongoDB Atlas
+* Mongoose / MongoDB driver
+
+### Caching
+
+* Redis
+* Upstash Redis
+
+### Development
+
+* ESLint
+* Prettier
+* Git
+* GitHub
+* npm / pnpm
+
+---
+
+## 🏗️ Architecture
+
+The application follows a modern full-stack architecture:
+
+```text
+┌─────────────────────────────────────┐
+│             Client / UI             │
+│          Next.js + React             │
+└─────────────────┬───────────────────┘
+                  │
+                  │ tRPC
+                  ▼
+┌─────────────────────────────────────┐
+│             API Layer               │
+│              tRPC                   │
+│      Type-safe server procedures    │
+└───────────────┬───────────┬─────────┘
+                │           │
+                ▼           ▼
+       ┌─────────────┐  ┌─────────────┐
+       │   MongoDB   │  │    Redis    │
+       │ Persistent  │  │   Caching   │
+       │    Data     │  │  / Upstash  │
+       └─────────────┘  └─────────────┘
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The frontend communicates with the backend through tRPC procedures. Database operations are handled through MongoDB, while Redis/Upstash is used for frequently accessed or cacheable data.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Project Structure
 
-## Learn More
+```text
+portfolio/
+│
+├── app/
+│   ├── api/
+│   │   └── trpc/
+│   │
+│   ├── about/
+│   ├── projects/
+│   ├── experience/
+│   ├── contact/
+│   │
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── globals.css
+│
+├── components/
+│   ├── ui/
+│   ├── navbar/
+│   ├── footer/
+│   ├── projects/
+│   └── sections/
+│
+├── server/
+│   ├── routers/
+│   │   ├── project.ts
+│   │   ├── profile.ts
+│   │   └── contact.ts
+│   │
+│   ├── trpc.ts
+│   └── context.ts
+│
+├── lib/
+│   ├── mongodb.ts
+│   ├── redis.ts
+│   └── utils.ts
+│
+├── models/
+│   ├── Project.ts
+│   ├── Profile.ts
+│   └── Contact.ts
+│
+├── types/
+│   └── index.ts
+│
+├── public/
+│   ├── images/
+│   └── icons/
+│
+├── .env.example
+├── .gitignore
+├── next.config.ts
+├── package.json
+├── tsconfig.json
+└── README.md
+```
 
-To learn more about Next.js, take a look at the following resources:
+> The exact structure may change as the project evolves.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# 🚀 Getting Started
 
-## Deploy on Vercel
+## Prerequisites
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Before running the project locally, make sure you have the following installed:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* Node.js 18+
+* npm, pnpm, or yarn
+* MongoDB database
+* Redis instance or Upstash Redis
+* Git
+
+You can verify your Node.js installation:
+
+```bash
+node --version
+```
+
+---
+
+## 📦 Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+```
+
+Move into the project directory:
+
+```bash
+cd YOUR_REPOSITORY
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Or using pnpm:
+
+```bash
+pnpm install
+```
+
+---
+
+# 🔐 Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+# Application
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# MongoDB
+MONGODB_URI=your_mongodb_connection_string
+
+# Redis / Upstash
+UPSTASH_REDIS_REST_URL=your_upstash_redis_url
+UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_token
+```
+
+Example:
+
+```env
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+MONGODB_URI=mon_
+```
